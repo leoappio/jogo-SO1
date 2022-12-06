@@ -8,9 +8,9 @@
 #include "Vector.h"
 #include "Timer.h"
 #include "Sprite.h"
+#include <iostream>
 
-
-EnemySpaceShip::EnemySpaceShip(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s),
+EnemySpaceShip::EnemySpaceShip(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s), dead(false),
    enemyLaserSpeed(Vector(-400, 0)),
    fireSpeed(rand() % 50 + 30),
    lives(1), dAnim(0),

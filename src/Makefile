@@ -13,9 +13,6 @@ NONTEST = main.cc main.o
 SOURCES = $(filter-out $(NONMAIN), $(wildcard *.cc))
 OBJECTS = $(SOURCES:.cc=.o)
 
-SOURCEST = $(filter-out $(NONTEST), $(wildcard *.cc))
-OBJECTST = $(SOURCEST:.cc=.o)
-
 LIBDIR = -L/usr/lib/x86_64-linux-gnu
 
 LNFLAGS = -lallegro -lallegro_primitives -lallegro_image -lallegro_font \

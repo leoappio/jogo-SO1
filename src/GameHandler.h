@@ -32,7 +32,6 @@ class Laser;
 
 
 extern const int GAME_OVER_WAIT_TIME;
-extern const int HIGH_SCORE_DISPLAY_TIME;
 extern const int WEAPON_DELAY_LASER;
 extern const int WEAPON_DELAY_MISSILE;
 extern const Vector PLAYER_PROJECTILE_SPEED;
@@ -64,6 +63,8 @@ class GameHandler{
    void updateEnemySpaceShipPosition(double dt);
    void updateBombPosition(double dt);
    void updateBossPosition(double dt);
+   
+   void respawnSpaceShip();
 
 
    void collision();
@@ -86,7 +87,7 @@ class GameHandler{
    void addLaser(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addMissile(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addBomb(const Point&, const ALLEGRO_COLOR&, const Vector&);
-   void addCreep(const Point&, const ALLEGRO_COLOR&, const Vector&);
+   void addEnemySpaceShip(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addBoss(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addPlayerLaserSingleShot();
    void addPlayerMissileSingleShot();
@@ -106,6 +107,9 @@ class GameHandler{
    std::shared_ptr<Timer> laserShotsTimer;
    std::shared_ptr<Timer> missileShotsTimer;
    std::shared_ptr<Timer> bossTimer;
+   std::shared_ptr<Timer> deadRespawnTimer;
+   std::shared_ptr<Timer> spawnEnemyShipsTimer;
+
    std::list<std::shared_ptr<Laser>> lasersList;
    std::list<std::shared_ptr<Missile>> missileList;
    std::list<std::shared_ptr<EnemySpaceShip>> enemySpaceShipsList;

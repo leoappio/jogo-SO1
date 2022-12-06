@@ -18,7 +18,6 @@
 #include "Boss.h"
 
 const int GAME_OVER_WAIT_TIME = 100;
-const int HIGH_SCORE_DISPLAY_TIME = 200;
 const int WEAPON_DELAY_LASER = 6;
 const int WEAPON_DELAY_MISSILE = 20;
 const Vector SPACE_SHIP_PROJECTILE_SPEED = Vector(500, 0);
@@ -27,6 +26,8 @@ const Vector SPACE_SHIP_PROJECTILE_SPEED = Vector(500, 0);
 GameHandler::GameHandler(int w, int h, int f):
    gameOver(false),
    lives(3),
+   displayWidth(w),
+   displayHeight(h),
    framesPerSec(f)
 {
    
@@ -62,8 +63,11 @@ void GameHandler::setupTimers(){
    laserShotsTimer = std::make_shared<Timer> (framesPerSec); laserShotsTimer->create();   
    missileShotsTimer = std::make_shared<Timer> (framesPerSec); missileShotsTimer->create();
    bossTimer = std::make_shared<Timer> (framesPerSec); bossTimer->create();
+   deadRespawnTimer = std::make_shared<Timer> (framesPerSec); deadRespawnTimer->create();
+   spawnEnemyShipsTimer = std::make_shared<Timer> (1); spawnEnemyShipsTimer->create();
    laserShotsTimer->startTimer();
    missileShotsTimer->startTimer();
+   spawnEnemyShipsTimer->startTimer();
 
 }
 
@@ -95,7 +99,6 @@ void GameHandler::setupSprites(){
    bossShip   = std::make_shared<Sprite> ("bossv2.png");
 }
 
-//-------------UPDATE FUNCTIONS---------------
 void GameHandler::update(double dt) {
    updateBackground(dt);
    if (spaceShip) {
@@ -103,6 +106,8 @@ void GameHandler::update(double dt) {
    }
    else if (!spaceShip && lives <= 0) {
       gameOver = true;
+   }else{
+      respawnSpaceShip();
    }
    updateBoss();
 
@@ -120,6 +125,18 @@ void GameHandler::updateBackground(double dt){
    bgMid = bgMid + bgSpeed * dt;
    if (bgMid.x >= 800) {
       bgMid.x = 0;
+   }
+}
+
+void GameHandler::respawnSpaceShip() {
+   if (!deadRespawnTimer->isRunning()) {
+      deadRespawnTimer->startTimer();
+   }
+   if (deadRespawnTimer->getCount() > 80) {
+      setupSpaceShip();
+      enemySpaceShipsList.clear();
+      deadRespawnTimer->stopTimer();
+      deadRespawnTimer->resetCount();
    }
 }
 
@@ -191,9 +208,6 @@ void GameHandler::drawLives() {
    if (lives > 2) {
       al_draw_rectangle(displayWidth - 150, 50, displayWidth - 130, 70,
 			al_map_rgb(0, 255, 0) , 5);
-   }   
-   if (!spaceShip && lives > 0) {
-      //gameOverFont->drawTextCenteredF(al_map_rgb(255, 0, 0), "%i LIVES REMAINING", lives);
    }
 }
 
@@ -215,13 +229,11 @@ void GameHandler::input(ALLEGRO_KEYBOARD_STATE& kb) {
       switch (spaceShip->input(kb)) {
 	 case act::action::FIRE_PRIMARY:
 	    if (laserShotsTimer->getCount() > WEAPON_DELAY_LASER) {
-         std::cout << "tiro normal\n";
 	      addPlayerLaserSingleShot();
 	    }
 	    break;
 	 case act::action::FIRE_SECONDARY:
 	    if (missileShotsTimer->getCount() > WEAPON_DELAY_MISSILE) {
-         std::cout << "missel\n";
 	      addPlayerMissileSingleShot();
 	    }
 	    break;
@@ -235,7 +247,7 @@ void GameHandler::input(ALLEGRO_KEYBOARD_STATE& kb) {
 
 bool GameHandler::is_game_over() {
    // change this condition------------
-   if (gameOver && gameOverTimer->getCount() > GAME_OVER_WAIT_TIME + HIGH_SCORE_DISPLAY_TIME) {
+   if (gameOver && gameOverTimer->getCount() > GAME_OVER_WAIT_TIME) {
       bg->draw_parallax_background(bgMid.x, 0);
       return true;
    }
@@ -245,13 +257,13 @@ bool GameHandler::is_game_over() {
 
 void GameHandler::spawn() {
    //spawn enemies in < format
-   addCreep(Point(800, 300), al_map_rgb(246, 64, 234),Vector(-180, 0));
-   addCreep(Point(900, 350), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addCreep(Point(900, 250), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addCreep(Point(1000, 400), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addCreep(Point(1000, 200), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addCreep(Point(1100, 100), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addCreep(Point(1100, 500), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   addEnemySpaceShip(Point(800, 300), al_map_rgb(246, 64, 234),Vector(-180, 0));
+   addEnemySpaceShip(Point(900, 350), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   addEnemySpaceShip(Point(900, 250), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   addEnemySpaceShip(Point(1000, 400), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   addEnemySpaceShip(Point(1000, 200), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   addEnemySpaceShip(Point(1100, 100), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   addEnemySpaceShip(Point(1100, 500), al_map_rgb(246, 64, 234), Vector(-180, 0));
 }
 
 
@@ -343,10 +355,16 @@ void GameHandler::updateEnemyPosition(double dt) {
    updateEnemySpaceShipPosition(dt);
    updateBombPosition(dt);
    updateBossPosition(dt);
-
+   
+   if(spawnEnemyShipsTimer->getCount() >= 5){
+      spawn();
+      spawnEnemyShipsTimer->srsTimer();
+   }
+   /*
    if (enemySpaceShipsList.size() <= 3 && bossExists == false && !bossIncoming) {
       spawn();
    }
+   */
 }
 
 void GameHandler::updateEnemySpaceShipPosition(double dt) {
@@ -354,9 +372,15 @@ void GameHandler::updateEnemySpaceShipPosition(double dt) {
       for (auto enemy = enemySpaceShipsList.begin(); enemy != enemySpaceShipsList.end(); ++enemy) {
 	      (*enemy)->update(dt);
          if((*enemy)->fire){
-            addLaser((*enemy)->centre, (*enemy)->color, (*enemy)->enemyLaserSpeed + Vector(0, -40));
-            addLaser((*enemy)->centre, (*enemy)->color, (*enemy)->enemyLaserSpeed + Vector(0, 40));
-            addLaser((*enemy)->centre + Vector(20, 0), (*enemy)->color, (*enemy)->enemyLaserSpeed);
+            int shotPosition = rand() % 2 + 1;
+
+            if(shotPosition == 1){
+               addLaser((*enemy)->centre, (*enemy)->color, (*enemy)->enemyLaserSpeed + Vector(0, -40));
+            }else{
+               addLaser((*enemy)->centre, (*enemy)->color, (*enemy)->enemyLaserSpeed + Vector(0, 40));
+            }
+            //addLaser((*enemy)->centre + Vector(20, 0), (*enemy)->color, (*enemy)->enemyLaserSpeed);
+
             (*enemy)->fire = false;
          }
 
@@ -395,6 +419,7 @@ void GameHandler::checkCollisionOnEnemies() {
    if(!lasersList.empty() && !enemySpaceShipsList.empty() && spaceShip){
       for (std::list< std::shared_ptr<Laser> >::iterator it_laser = 
 	      lasersList.begin(); it_laser != lasersList.end(); ++it_laser) {
+         if (doColorsMatch(spaceShip->color, (*it_laser)->color)) {
             for (std::list< std::shared_ptr<EnemySpaceShip> >::iterator it_enemy_SS = 
                enemySpaceShipsList.begin(); it_enemy_SS != enemySpaceShipsList.end(); ++it_enemy_SS) {
                Point pt_proj = (*it_laser)->centre;
@@ -441,12 +466,14 @@ void GameHandler::checkCollisionOnEnemies() {
                   boss->hit();
                }
             }
+         }
       }
    }
    
    if (!missileList.empty() && !enemySpaceShipsList.empty() && spaceShip){
       for (std::list< std::shared_ptr<Missile> >::iterator it_missile = 
 	      missileList.begin(); it_missile != missileList.end(); ++it_missile) {
+         if (doColorsMatch(spaceShip->color, (*it_missile)->color)) {
             for (std::list< std::shared_ptr<EnemySpaceShip> >::iterator it_enemy_SS = 
                enemySpaceShipsList.begin(); it_enemy_SS != enemySpaceShipsList.end(); ++it_enemy_SS) {
                Point pt_proj = (*it_missile)->centre;
@@ -457,8 +484,6 @@ void GameHandler::checkCollisionOnEnemies() {
                (pt_proj.x < pt_enem.x + enem_size) &&
                (pt_proj.y > pt_enem.y - enem_size) &&
                (pt_proj.y < pt_enem.y + enem_size)) {
-
-                  //(*it_missile)->live = false;
                   (*it_enemy_SS)->hit();
                }
             }
@@ -474,7 +499,6 @@ void GameHandler::checkCollisionOnEnemies() {
                (pt_proj.y > pt_enem.y - enem_size) &&
                (pt_proj.y < pt_enem.y + enem_size)) {
 
-                  //(*it_missile)->live = false;
                   (*it_bomb)->hit();
                }
             }
@@ -489,11 +513,11 @@ void GameHandler::checkCollisionOnEnemies() {
                (pt_proj.y > pt_enem.y - enem_size) &&
                (pt_proj.y < pt_enem.y + enem_size)) {
 
-                  //(*it_missile)->live = false;
                   boss->hit();
                }
             }
-      } 
+         }
+      }
    }
 }
 
@@ -536,9 +560,11 @@ void GameHandler::checkCollisionOnPlayer() {
    if(!lasersList.empty() && !enemySpaceShipsList.empty() && spaceShip){
       for (std::list< std::shared_ptr<Laser> >::iterator it_laser = 
 	      lasersList.begin(); it_laser != lasersList.end(); ++it_laser) {
-         if (isPointBoxCollision((*it_laser)->centre, spaceShip->centre, 16)) {	  
-	       (*it_laser)->live = false;
-	       spaceShip->hit(1);
+         if (!doColorsMatch((*it_laser)->color, spaceShip->color)) {
+            if (isPointBoxCollision((*it_laser)->centre, spaceShip->centre, 16)) {	  
+            (*it_laser)->live = false;
+            spaceShip->hit(1);
+            }
          }
       }
    }
@@ -546,10 +572,11 @@ void GameHandler::checkCollisionOnPlayer() {
    if (!missileList.empty() && !enemySpaceShipsList.empty() && spaceShip){
       for (std::list< std::shared_ptr<Missile> >::iterator it_missile = 
 	      missileList.begin(); it_missile != missileList.end(); ++it_missile) {
-         if (isPointBoxCollision((*it_missile)->centre, spaceShip->centre, 16)) {	  
-            //(*it_missile)->live = false;
-            spaceShip->hit(1);
-         } 
+         if (!doColorsMatch((*it_missile)->color, spaceShip->color)) {
+            if (isPointBoxCollision((*it_missile)->centre, spaceShip->centre, 16)) {
+               spaceShip->hit(1);
+            } 
+         }
       }
    }
 }
@@ -639,7 +666,7 @@ void GameHandler::addMissile(const Point& cen, const ALLEGRO_COLOR& col, const V
    missileList.push_back(missileObject);
 }
 
-void GameHandler::addCreep(const Point& cen, const ALLEGRO_COLOR& col, const Vector& spd) {
+void GameHandler::addEnemySpaceShip(const Point& cen, const ALLEGRO_COLOR& col, const Vector& spd) {
    enemySpaceShipsList.push_back(std::make_shared<EnemySpaceShip> (cen, col, spd));
 }
 

@@ -67,7 +67,6 @@ void Bomb::update(double dt) {
       row++;
    }
    if(centre.x<400 && !fired){
-      std::cout<<"firing";
       fire = true;
       fired = true;
       dead = true;
