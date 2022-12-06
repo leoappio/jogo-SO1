@@ -526,30 +526,24 @@ void GameHandler::checkCollidingEnemyWithPlayer() {
    if(!enemySpaceShipsList.empty() && spaceShip){
       for (std::list< std::shared_ptr<EnemySpaceShip> >::iterator it_enemy_SS = 
          enemySpaceShipsList.begin(); it_enemy_SS != enemySpaceShipsList.end(); ++it_enemy_SS) {
-         if ((*it_enemy_SS)->dead == false) {	    
-	         if (doHitboxesIntersect(spaceShip->centre, 16, (*it_enemy_SS)->centre, (*it_enemy_SS)->size)) {
+         if (doHitboxesIntersect(spaceShip->centre, 16, (*it_enemy_SS)->centre, (*it_enemy_SS)->size)) {
 	            (*it_enemy_SS)->hit();
 	            spaceShip->hit(1);
-            }
          }
       }
 
       for (std::list< std::shared_ptr<Bomb> >::iterator it_bomb = 
          bombEnemiesList.begin(); it_bomb != bombEnemiesList.end(); ++it_bomb) {
-         if ((*it_bomb)->dead == false) {	    
             if (doHitboxesIntersect(spaceShip->centre, 16, (*it_bomb)->centre, (*it_bomb)->size)) {
                (*it_bomb)->hit();
                spaceShip->hit(1);
             }
-         }
       }
 
       if(boss != nullptr){
-         if (boss->dead == false) {	    
-            if (doHitboxesIntersect(spaceShip->centre, 16, boss->centre, boss->bossSize)) {
-               boss->hit();
-               spaceShip->hit(1);
-            }
+         if (doHitboxesIntersect(spaceShip->centre, 16, boss->centre, boss->bossSize)) {
+            boss->hit();
+            spaceShip->hit(1);
          }
       }
    }   
