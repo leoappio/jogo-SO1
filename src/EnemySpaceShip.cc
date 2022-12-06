@@ -9,10 +9,9 @@
 #include "Timer.h"
 #include "Sprite.h"
 
-const int CREEP_SIZE = 20;
 
 EnemySpaceShip::EnemySpaceShip(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s),
-   projSpeed(Vector(-400, 0)),
+   enemyLaserSpeed(Vector(-400, 0)),
    fireSpeed(rand() % 50 + 30),
    lives(1), dAnim(0),
    dAnim_complete(false), fire(true)
@@ -21,13 +20,13 @@ EnemySpaceShip::EnemySpaceShip(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), 
 }
 
 void EnemySpaceShip::load_assets() {
-   fireDelay = std::make_shared<Timer> (60);   
-   fireDelay->create();
-   fireDelay->startTimer();
+   delayTimer = std::make_shared<Timer> (60);   
+   delayTimer->create();
+   delayTimer->startTimer();
 }
 	
 EnemySpaceShip::~EnemySpaceShip() {
-   fireDelay.reset();
+   delayTimer.reset();
 }
 
 void EnemySpaceShip::hit() {
@@ -36,23 +35,20 @@ void EnemySpaceShip::hit() {
       dead = true;
 }
 	
-
 void EnemySpaceShip::draw(std::shared_ptr<Sprite> enemyShip, std::shared_ptr<Sprite> enemyDeath) {
    if (!dead) {
       enemyShip->draw_tinted(centre, color, 0);
    }
    else {
-      // enemy has been hit and killed, proceed through death animation sequence
       if (dAnim < 5) deathAnim(enemyDeath);
       else dAnim_complete = true;
-   }      
+   }
 }
 
 void EnemySpaceShip::deathAnim(std::shared_ptr<Sprite> enemyDeath) {
    enemyDeath->draw_death_anim(dAnim, centre, 0);
    dAnim++;
 }
-
 
 void EnemySpaceShip::update(double dt) {
    centre = centre + speed * dt;
@@ -62,25 +58,16 @@ void EnemySpaceShip::update(double dt) {
       return;
    }
    
-   if (centre.y > 600 - CREEP_SIZE &&speed.y > 0)  
+   if (centre.y > 600 - 20 &&speed.y > 0)  
       speed.reflectY();
-   if (centre.y < 0 - CREEP_SIZE && speed.y < 0)
+   if (centre.y < 0 - 20 && speed.y < 0)
       speed.reflectY();
 
 
-   if (fireDelay->getCount() > fireSpeed) {
+   if (delayTimer->getCount() > fireSpeed) {
       fire = true;
-      fireDelay->stopTimer();
-      fireDelay->resetCount();
-      fireDelay->startTimer();
+      delayTimer->stopTimer();
+      delayTimer->resetCount();
+      delayTimer->startTimer();
    }
 }
-
-void EnemySpaceShip::setFire(bool f) { fire = f; }
-ALLEGRO_COLOR EnemySpaceShip::getColor() { return color; }
-Vector EnemySpaceShip::getProjSpeed() { return projSpeed; }
-int EnemySpaceShip::getSize() { return CREEP_SIZE; }
-Point EnemySpaceShip::getCentre() { return centre; }
-bool EnemySpaceShip::getDead() { return dead; }   
-bool EnemySpaceShip::getFire() { return fire; }
-bool EnemySpaceShip::getdAnim_complete() { return dAnim_complete; }

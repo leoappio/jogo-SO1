@@ -10,17 +10,16 @@
 #include "Sprite.h"
 #include <iostream>
 
-//boss size is 60-80 depending on damage level-- set to one off the start so the boss is
-// "invulnerable" while entering the screen.
+
 const int BOSS_HP = 50;
 
-Boss::Boss(Point cen, ALLEGRO_COLOR c, Vector spd) : Enemy(cen, c, spd),
-						     projSpeed(Vector(-400, 0)),
+Boss::Boss(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s), dead(false),
+						     enemyLaserSpeed(Vector(-400, 0)),
 						     fireSpeed(400),
 						     lives(30), dAnim(0),
 						     dAnim_complete(false), fire(true)
 {
-   hitbox = 1;
+   bossSize = 1;
    targetable = false;
    col = 0;
    row = 0; 
@@ -28,30 +27,15 @@ Boss::Boss(Point cen, ALLEGRO_COLOR c, Vector spd) : Enemy(cen, c, spd),
 }
 
 void Boss::load_assets() {
-   fireDelay = std::make_shared<Timer> (60);   
-   fireDelay->create();
-   fireDelay->startTimer();
+   delayTimer = std::make_shared<Timer> (60);   
+   delayTimer->create();
+   delayTimer->startTimer();
 }
-
 
 Boss::~Boss() {
-   fireDelay.reset();
+   delayTimer.reset();
 }
 
-// get methods
-ALLEGRO_COLOR Boss::getColor() { return color; }
-Vector Boss::getProjSpeed() { return projSpeed; }
-int Boss::getSize() { return hitbox; }
-Point Boss::getCentre() { return centre; }
-bool Boss::getDead() { return dead; }   
-bool Boss::getFire() { return fire; }
-bool Boss::getdAnim_complete() { return dAnim_complete; }
-bool Boss::getAlive() { return aliveBoss; }
-
-// set methods
-void Boss::setFire(bool f) { fire = f; }
-
-//When hit, decrement lives by 1
 void Boss::hit() {
    lives -= 1;
    if(lives < 1) {
@@ -59,15 +43,12 @@ void Boss::hit() {
    }
 }
 
-
-//draw image to display the boss ship
 void Boss::draw(std::shared_ptr<Sprite> bossShip, std::shared_ptr<Sprite> bossDeath) {
    chooseFrame();
    if (!dead) {
       bossShip -> draw_boss(row, col, 200, 200, centre, 0);
    }
    else {
-      //Boss is dead and we proceed to the death animation
       if (dAnim < 5) 
 	 deathAnim(bossDeath);
       else
@@ -87,45 +68,44 @@ void Boss::update(double dt) {
    centre = centre + speed * dt;
    
    if(centre.x < 700 && !targetable) {
-      targetable = true;// becomes targetable
-      hitbox = 80;      // set hitbox to 80
-      speed.x = 0;      // no more x movement      
-      speed.y = 100;    // begin downward movement
+      targetable = true;
+      bossSize = 80;
+      speed.x = 0;      
+      speed.y = 100;
    }
-   // reflect conditions
-   if (centre.y > 450 && speed.y > 0) { // if below mark and moving downwards
+
+   if (centre.y > 450 && speed.y > 0) {
       speed.reflectY();
    }
-   if (centre.y < 150 && speed.y < 0) { // if above mark and moving upwards
+   if (centre.y < 150 && speed.y < 0) {
       speed.reflectY();
    }
    // check fire condition
-   if (fireDelay->getCount() > fireSpeed) {
+   if (delayTimer->getCount() > fireSpeed) {
       fire = true;
-      fireDelay->srsTimer(); // stop, reset, start
+      delayTimer->srsTimer();
    }	 
 }
 
-// for animation
 void Boss::chooseFrame() {
    if (lives > BOSS_HP){
       spriteSheetIndex = 0;
    }
-   // middle damage animation--fire speed goes up.
+
    if (lives <= BOSS_HP && spriteSheetIndex < 3) { 
       fireSpeed = rand()%50+20;
-      speed = speed * 1.1; // increase speed
-      hitbox = 70;
+      speed = speed * 1.1;
+      bossSize = 70;
       spriteSheetIndex++;
    }
-   // final damage animation-- fire speed up again
+
    if (lives <= 20 && spriteSheetIndex < 8) {
       fireSpeed = rand()%30+20;
       speed = speed * 1.1; // increase speed
-      hitbox = 60;
+      bossSize = 60;
       spriteSheetIndex++;
    }
-   // interpret index as row and col of sprite sheet
+
    row = spriteSheetIndex / 3;
    col = spriteSheetIndex % 3;
 

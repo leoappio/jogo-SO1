@@ -20,43 +20,30 @@ struct Vector;
 class Timer;
 class Sprite;
 
-extern const int CREEP_SIZE;
-
 class EnemySpaceShip{
    
   private:
-   std::shared_ptr<Timer> fireDelay;   
-   Vector projSpeed;
-   int fireSpeed;
-   int lives;
-   int dAnim;   
-   bool dAnim_complete;
-   bool fire;
+   std::shared_ptr<Timer> delayTimer;
+	
+  public:
+   EnemySpaceShip(Point p, ALLEGRO_COLOR c, Vector s);
+   ~EnemySpaceShip();
    Point centre;
    ALLEGRO_COLOR color;
    Vector speed;
    bool dead;
-	
-  public:
-
-   EnemySpaceShip(Point p, ALLEGRO_COLOR c, Vector s);
-   ~EnemySpaceShip();
+   int size = 20;
+   Vector enemyLaserSpeed;
+   int fireSpeed;
+   int lives;
+   int dAnim;
+   bool dAnim_complete;
+   bool fire;
    
    void update(double dt);
    void load_assets();
    void deathAnim(std::shared_ptr<Sprite>);
    void hit();
-   void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);
-   
-   void setFire(bool f);	
-   ALLEGRO_COLOR getColor();
-   Vector getProjSpeed(); 
-   int getSize();    
-   Point getCentre();
-   bool getDead(); 
-   bool getFire();    
-   bool getdAnim_complete();
-
-   
+   void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);  
 };
 #endif
