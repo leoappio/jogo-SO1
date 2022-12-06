@@ -85,7 +85,7 @@ class GameHandler{
 
 
    void addLaser(const Point&, const ALLEGRO_COLOR&, const Vector&);
-   void addMissile(const Point&, const ALLEGRO_COLOR&, const Vector&);
+   void addMissile(const Point&, const ALLEGRO_COLOR&, const Vector&, bool isFromBoss);
    void addBomb(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addEnemySpaceShip(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addBoss(const Point&, const ALLEGRO_COLOR&, const Vector&);
@@ -109,6 +109,7 @@ class GameHandler{
    std::shared_ptr<Timer> bossTimer;
    std::shared_ptr<Timer> deadRespawnTimer;
    std::shared_ptr<Timer> spawnEnemyShipsTimer;
+   std::shared_ptr<Timer> spawnBombsTimer;
 
    std::list<std::shared_ptr<Laser>> lasersList;
    std::list<std::shared_ptr<Missile>> missileList;
@@ -135,13 +136,7 @@ class GameHandler{
    bool gameOver;
 
    bool bossExists = false;
-   bool bossIncoming = false;
-   int  bossSpawnConditionCounter = 0;
    bool _Boss = false;
-   bool killedBoss = false;
-   bool writeComplete = false;
-   bool bossFirstShot = false;
-
 
    int lives;
    int displayWidth;

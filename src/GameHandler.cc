@@ -45,6 +45,10 @@ GameHandler::~GameHandler() {
    gameOverTimer.reset();
    laserShotsTimer.reset();
    missileShotsTimer.reset();
+   bossTimer.reset();
+   deadRespawnTimer.reset();
+   spawnEnemyShipsTimer.reset();
+   spawnBombsTimer.reset();
 }
 
 void GameHandler::init() {
@@ -62,12 +66,15 @@ void GameHandler::setupTimers(){
    gameOverTimer = std::make_shared<Timer> (framesPerSec); gameOverTimer->create();
    laserShotsTimer = std::make_shared<Timer> (framesPerSec); laserShotsTimer->create();   
    missileShotsTimer = std::make_shared<Timer> (framesPerSec); missileShotsTimer->create();
-   bossTimer = std::make_shared<Timer> (framesPerSec); bossTimer->create();
+   bossTimer = std::make_shared<Timer> (1); bossTimer->create();
    deadRespawnTimer = std::make_shared<Timer> (framesPerSec); deadRespawnTimer->create();
    spawnEnemyShipsTimer = std::make_shared<Timer> (1); spawnEnemyShipsTimer->create();
+   spawnBombsTimer = std::make_shared<Timer> (1); spawnBombsTimer->create();
+   bossTimer->startTimer();
    laserShotsTimer->startTimer();
    missileShotsTimer->startTimer();
    spawnEnemyShipsTimer->startTimer();
+   spawnBombsTimer->startTimer();
 
 }
 
@@ -106,9 +113,11 @@ void GameHandler::update(double dt) {
    }
    else if (!spaceShip && lives <= 0) {
       gameOver = true;
+      std::cout<<"GAME OVER";
    }else{
       respawnSpaceShip();
    }
+
    updateBoss();
 
    updateProjectilePosition(dt);
@@ -146,7 +155,8 @@ void GameHandler::draw() {
    drawLives();
    drawShots();
    drawEnemySpaceShips();
-   drawBossIncomingMessage();
+   drawBombs();
+   drawBoss();
    
    if (gameOver) {
       showGameOverMessage();
@@ -256,16 +266,17 @@ bool GameHandler::is_game_over() {
 
 
 void GameHandler::spawn() {
-   //spawn enemies in < format
-   addEnemySpaceShip(Point(800, 300), al_map_rgb(246, 64, 234),Vector(-180, 0));
-   addEnemySpaceShip(Point(900, 350), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addEnemySpaceShip(Point(900, 250), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addEnemySpaceShip(Point(1000, 400), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addEnemySpaceShip(Point(1000, 200), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addEnemySpaceShip(Point(1100, 100), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   addEnemySpaceShip(Point(1100, 500), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   //spawn enemies in < format if boss doesnt exist
+   if(!bossExists){
+      addEnemySpaceShip(Point(800, 300), al_map_rgb(246, 64, 234),Vector(-180, 0));
+      addEnemySpaceShip(Point(900, 350), al_map_rgb(246, 64, 234), Vector(-180, 0));
+      addEnemySpaceShip(Point(900, 250), al_map_rgb(246, 64, 234), Vector(-180, 0));
+      addEnemySpaceShip(Point(1000, 400), al_map_rgb(246, 64, 234), Vector(-180, 0));
+      addEnemySpaceShip(Point(1000, 200), al_map_rgb(246, 64, 234), Vector(-180, 0));
+      addEnemySpaceShip(Point(1100, 100), al_map_rgb(246, 64, 234), Vector(-180, 0));
+      addEnemySpaceShip(Point(1100, 500), al_map_rgb(246, 64, 234), Vector(-180, 0));
+   }
 }
-
 
 void GameHandler::circleLaser(std::shared_ptr<Bomb> bomb) {
    
@@ -278,29 +289,17 @@ void GameHandler::circleLaser(std::shared_ptr<Bomb> bomb) {
 
 }
 void GameHandler::bossFire(){
-   int n = rand() % 7 + 1;
    Point playerloc;
-if (spaceShip) {
+
+   if (spaceShip) {
       playerloc = spaceShip->centre;
    }
+
    Vector aim(0, 0);
-   switch(n) {
-      case 1:
-	 for(int i=-100; i<=100; i+=20)
-	    addLaser(boss->centre+Point(0, i), boss->color, boss->enemyLaserSpeed);
-	 break;
-      case 2:
-	 aim.Angle(playerloc, boss->centre, 0.9);
-	 for(int i = -70; i <= 70; i += 20)
-	    addLaser(boss->centre+Point(50,0), boss->color, aim+ Vector(-30,i));
-	break;
-      default:
-	 aim.Angle(playerloc, boss->centre+Point(0,50), 0.9);
-	 addMissile(boss->centre+Point(0,50), al_map_rgb(204, 3, 3), aim);
-	 aim.Angle(playerloc, boss->centre+Point(0,-50), 0.9);
-	 addMissile(boss->centre+Point(0,-50), al_map_rgb(204, 3, 3), aim);
-	 break;
-   }
+   aim.Angle(playerloc, boss->centre+Point(0,50), 0.9);
+   addMissile(boss->centre+Point(0,50), al_map_rgb(204, 3, 3), aim, true);
+   aim.Angle(playerloc, boss->centre+Point(0,-50), 0.9);
+   addMissile(boss->centre+Point(0,-50), al_map_rgb(204, 3, 3), aim, true);
 }
 
 void GameHandler::spawnBoss() {
@@ -314,26 +313,11 @@ void GameHandler::addBoss(const Point& cen, const ALLEGRO_COLOR& col, const Vect
 }
 
 void GameHandler::updateBoss() {
-   if (bossSpawnConditionCounter > 30 && bossExists == false) {
-      if (bossTimer->isRunning() == false) {
-         bossTimer->startTimer();
-         bossIncoming = true;
-      }
-      if (bossTimer->getCount() > 60) {
-         spawnBoss();
-         bossTimer->stopTimer();
-         bossTimer->resetCount();
-         bossIncoming = false;
-      }      
-   }
-}
-
-void GameHandler::drawBossIncomingMessage() {
-   if (bossTimer->isRunning() == true && bossIncoming == true) {
-      //gameOverFont->drawTextCentered(al_map_rgb(204, 204, 0), "BOSS INCOMING");
-      if (bossTimer->getCount() > 200) {
-	 bossIncoming = false;
-      }      
+   if (bossTimer->getCount() >= 10) {
+      std::cout << "boss spawnado";
+      spawnBoss();
+      bossTimer->stopTimer();
+      bossTimer->resetCount();
    }
 }
 
@@ -356,15 +340,19 @@ void GameHandler::updateEnemyPosition(double dt) {
    updateBombPosition(dt);
    updateBossPosition(dt);
    
+   //spawn enemies every 5 seconds
    if(spawnEnemyShipsTimer->getCount() >= 5){
       spawn();
       spawnEnemyShipsTimer->srsTimer();
    }
-   /*
-   if (enemySpaceShipsList.size() <= 3 && bossExists == false && !bossIncoming) {
-      spawn();
+
+   //spawn bombs every 30 seconds
+   if(spawnBombsTimer->getCount() >= 30){
+      Point pt(800, 200);
+      pt.y=pt.y+(rand()%200);
+      addBomb(pt, al_map_rgb(204,3,3), Vector(-60, 0));
+      spawnBombsTimer->srsTimer();
    }
-   */
 }
 
 void GameHandler::updateEnemySpaceShipPosition(double dt) {
@@ -379,11 +367,9 @@ void GameHandler::updateEnemySpaceShipPosition(double dt) {
             }else{
                addLaser((*enemy)->centre, (*enemy)->color, (*enemy)->enemyLaserSpeed + Vector(0, 40));
             }
-            //addLaser((*enemy)->centre + Vector(20, 0), (*enemy)->color, (*enemy)->enemyLaserSpeed);
 
             (*enemy)->fire = false;
          }
-
       }
    }
 }
@@ -403,7 +389,9 @@ void GameHandler::updateBombPosition(double dt) {
 void GameHandler::updateBossPosition(double dt) {
    if(boss != nullptr){
       boss->update(dt);
-      bossFire();
+      if(boss->fire){
+         bossFire();
+      }
    }
 }
 
@@ -643,8 +631,6 @@ void GameHandler::cullEnemies() {
          if(lives<3){
             lives++;
             bossExists = false;
-            bossFirstShot = false;
-            bossSpawnConditionCounter=0;
          }
       }
    }
@@ -654,8 +640,8 @@ void GameHandler::addLaser(const Point& cen, const ALLEGRO_COLOR& col, const Vec
    lasersList.push_back(std::make_shared<Laser> (cen, col, spd));
 }
 
-void GameHandler::addMissile(const Point& cen, const ALLEGRO_COLOR& col, const Vector& spd) {
-   std::shared_ptr<Missile> missileObject = std::make_shared<Missile> (cen, col, spd);
+void GameHandler::addMissile(const Point& cen, const ALLEGRO_COLOR& col, const Vector& spd, bool isFromBoss) {
+   std::shared_ptr<Missile> missileObject = std::make_shared<Missile> (cen, col, spd, isFromBoss);
    missileObject->load_assets();
    missileList.push_back(missileObject);
 }
@@ -674,7 +660,7 @@ void GameHandler::addPlayerLaserSingleShot() {
 }
 
 void GameHandler::addPlayerMissileSingleShot() {
-   addMissile(spaceShip->centre, spaceShip->color, SPACE_SHIP_PROJECTILE_SPEED);
+   addMissile(spaceShip->centre, spaceShip->color, SPACE_SHIP_PROJECTILE_SPEED, false);
    missileShotsTimer->srsTimer();
 }
 

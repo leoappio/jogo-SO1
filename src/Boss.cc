@@ -13,11 +13,14 @@
 
 const int BOSS_HP = 50;
 
-Boss::Boss(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s), dead(false),
+Boss::Boss(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s),
 						     enemyLaserSpeed(Vector(-400, 0)),
-						     fireSpeed(400),
-						     lives(30), dAnim(0),
-						     dAnim_complete(false), fire(true)
+                       dead(false),
+                       dAnim_complete(false), 
+                       fire(true),
+						     fireSpeed(50),
+						     lives(30), dAnim(0)
+
 {
    bossSize = 1;
    targetable = false;
@@ -84,7 +87,9 @@ void Boss::update(double dt) {
    if (delayTimer->getCount() > fireSpeed) {
       fire = true;
       delayTimer->srsTimer();
-   }	 
+   }else{
+      fire = false;
+   }
 }
 
 void Boss::chooseFrame() {

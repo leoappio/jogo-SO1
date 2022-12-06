@@ -3,9 +3,14 @@
 #include <cmath>
 #include "Sprite.h"
 
-Missile::Missile(Point p, ALLEGRO_COLOR c, Vector s): centre(p), color(c), speed(s)
+Missile::Missile(Point p, ALLEGRO_COLOR c, Vector s, bool isFromBoss): centre(p), color(c), speed(s)
 {
-   angle=atan(speed.y/speed.x)+4.71 * -1;
+   if(isFromBoss){
+      angle=atan(speed.y/speed.x)+4.71;
+   }else{
+      angle=atan(speed.y/speed.x)+4.71 * -1;
+   }
+   
    centre = centre + speed * 0.1;
    mAnim = 0;
    live = true;

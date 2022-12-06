@@ -23,7 +23,7 @@ class Missile{
    ALLEGRO_COLOR color;
    Vector speed;
     bool live;
-   Missile(Point p, ALLEGRO_COLOR c, Vector s);
+   Missile(Point p, ALLEGRO_COLOR c, Vector s, bool isFromBoss);
    ~Missile();
    
    void load_assets();
