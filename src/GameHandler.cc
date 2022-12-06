@@ -16,6 +16,8 @@
 #include "EnemySpaceShip.h"
 #include "Bomb.h"
 #include "Boss.h"
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 const int GAME_OVER_WAIT_TIME = 100;
 const int WEAPON_DELAY_LASER = 6;
@@ -113,7 +115,6 @@ void GameHandler::update(double dt) {
    }
    else if (!spaceShip && lives <= 0) {
       gameOver = true;
-      std::cout<<"GAME OVER";
    }else{
       respawnSpaceShip();
    }
@@ -222,13 +223,15 @@ void GameHandler::drawLives() {
 }
 
 void GameHandler::showGameOverMessage() {
-   if (!gameOverTimer->isRunning()) {
-      gameOverTimer->startTimer();
+   if (gameOver) {
+      ALLEGRO_FONT* font = al_load_font("DavidCLM-BoldItalic.ttf", 64, 0);
+      al_draw_text(font, al_map_rgb(204, 3, 3), 400, 300, ALLEGRO_ALIGN_CENTRE, "GAME OVER!");
+      enemySpaceShipsList.clear();
+      boss = nullptr;
+      bombEnemiesList.clear();
+      lasersList.clear();
+      missileList.clear();
    }
-   if (gameOverTimer->getCount() < GAME_OVER_WAIT_TIME) {
-      // game over message
-      //gameOverFont->drawTextCentered(al_map_rgb(255, 0, 0), "GAME OVER");
-   }   
 }
 //-----------------------------
 
@@ -256,7 +259,6 @@ void GameHandler::input(ALLEGRO_KEYBOARD_STATE& kb) {
 
 
 bool GameHandler::is_game_over() {
-   // change this condition------------
    if (gameOver && gameOverTimer->getCount() > GAME_OVER_WAIT_TIME) {
       bg->draw_parallax_background(bgMid.x, 0);
       return true;
@@ -313,8 +315,7 @@ void GameHandler::addBoss(const Point& cen, const ALLEGRO_COLOR& col, const Vect
 }
 
 void GameHandler::updateBoss() {
-   if (bossTimer->getCount() >= 10) {
-      std::cout << "boss spawnado";
+   if (bossTimer->getCount() >= 60) {
       spawnBoss();
       bossTimer->stopTimer();
       bossTimer->resetCount();
@@ -388,9 +389,11 @@ void GameHandler::updateBombPosition(double dt) {
 
 void GameHandler::updateBossPosition(double dt) {
    if(boss != nullptr){
-      boss->update(dt);
-      if(boss->fire){
-         bossFire();
+      if(!boss->dead){
+         boss->update(dt);
+         if(boss->fire){
+            bossFire();
+         }
       }
    }
 }
@@ -404,7 +407,7 @@ void GameHandler::collision() {
 
 void GameHandler::checkCollisionOnEnemies() {
 
-   if(!lasersList.empty() && !enemySpaceShipsList.empty() && spaceShip){
+   if(!lasersList.empty() && spaceShip){
       for (std::list< std::shared_ptr<Laser> >::iterator it_laser = 
 	      lasersList.begin(); it_laser != lasersList.end(); ++it_laser) {
          if (doColorsMatch(spaceShip->color, (*it_laser)->color)) {
@@ -458,7 +461,7 @@ void GameHandler::checkCollisionOnEnemies() {
       }
    }
    
-   if (!missileList.empty() && !enemySpaceShipsList.empty() && spaceShip){
+   if (!missileList.empty() && spaceShip){
       for (std::list< std::shared_ptr<Missile> >::iterator it_missile = 
 	      missileList.begin(); it_missile != missileList.end(); ++it_missile) {
          if (doColorsMatch(spaceShip->color, (*it_missile)->color)) {
@@ -511,7 +514,7 @@ void GameHandler::checkCollisionOnEnemies() {
 
 void GameHandler::checkCollidingEnemyWithPlayer() {
 
-   if(!enemySpaceShipsList.empty() && spaceShip){
+   if(spaceShip){
       for (std::list< std::shared_ptr<EnemySpaceShip> >::iterator it_enemy_SS = 
          enemySpaceShipsList.begin(); it_enemy_SS != enemySpaceShipsList.end(); ++it_enemy_SS) {
          if (doHitboxesIntersect(spaceShip->centre, 16, (*it_enemy_SS)->centre, (*it_enemy_SS)->size)) {
@@ -539,7 +542,7 @@ void GameHandler::checkCollidingEnemyWithPlayer() {
 
 
 void GameHandler::checkCollisionOnPlayer() {
-   if(!lasersList.empty() && !enemySpaceShipsList.empty() && spaceShip){
+   if(spaceShip){
       for (std::list< std::shared_ptr<Laser> >::iterator it_laser = 
 	      lasersList.begin(); it_laser != lasersList.end(); ++it_laser) {
          if (!doColorsMatch((*it_laser)->color, spaceShip->color)) {
@@ -551,7 +554,7 @@ void GameHandler::checkCollisionOnPlayer() {
       }
    }
 
-   if (!missileList.empty() && !enemySpaceShipsList.empty() && spaceShip){
+   if (spaceShip){
       for (std::list< std::shared_ptr<Missile> >::iterator it_missile = 
 	      missileList.begin(); it_missile != missileList.end(); ++it_missile) {
          if (!doColorsMatch((*it_missile)->color, spaceShip->color)) {
@@ -627,7 +630,7 @@ void GameHandler::cullEnemies() {
    }
 
    if (boss != nullptr){
-      if(boss->dAnim_complete){
+      if(boss->dAnim_complete && bossExists){
          if(lives<3){
             lives++;
             bossExists = false;

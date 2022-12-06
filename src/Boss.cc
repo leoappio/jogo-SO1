@@ -106,7 +106,7 @@ void Boss::chooseFrame() {
 
    if (lives <= 20 && spriteSheetIndex < 8) {
       fireSpeed = rand()%30+20;
-      speed = speed * 1.1; // increase speed
+      speed = speed * 1.1;
       bossSize = 60;
       spriteSheetIndex++;
    }
