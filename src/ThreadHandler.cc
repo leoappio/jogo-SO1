@@ -2,9 +2,12 @@
 
 __BEGIN_API
 
-Thread* ThreadHandler::engineThread;
+Thread* ThreadHandler::gameloopThread;
 Thread* ThreadHandler::spaceShipThread;
+Thread* ThreadHandler::windowThread;
 
-SpaceShip* ThreadHandler::spaceShip;
-Engine* ThreadHandler::engine; 
+GameLoopHandler* ThreadHandler::gameLoop;
+std::shared_ptr<GameHandler> ThreadHandler::gameHandler;
+Window* ThreadHandler::window;
+
 __END_API

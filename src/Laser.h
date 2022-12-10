@@ -1,7 +1,3 @@
-/**
- * @file Laser.h
- */
-
 #ifndef LASER_H
 #define LASER_H
 

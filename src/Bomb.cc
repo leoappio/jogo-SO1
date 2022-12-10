@@ -33,22 +33,6 @@ void Bomb::hit() {
    if (lives < 1)
       dead = true;
 }
-	
-void Bomb::draw(std::shared_ptr<Sprite> enemyShip, std::shared_ptr<Sprite> enemyDeath) {
-   if (!dead) {
-      enemyShip->draw_region(row, col, 40, 41, centre, 0);
-   }
-   else {
-      if (dAnim < 5) deathAnim(enemyDeath);
-      else{ dAnim_complete = true;}
-   }      
-}
-
-void Bomb::deathAnim(std::shared_ptr<Sprite> enemyDeath) { 
-   enemyDeath->draw_death_anim(dAnim, centre, 0);
-   dAnim++;
-}
-
 
 void Bomb::update(double dt) {
    centre = centre + speed * dt;

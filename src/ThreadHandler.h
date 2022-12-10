@@ -2,11 +2,13 @@
 #define THREADHANDLER_H
 
 #include <iostream>
+#include <memory>
 #include "cpu.h"
 #include "traits.h"
 #include "thread.h"
-#include "Engine.h"
 #include "GameHandler.h"
+#include "GameLoopHandler.h"
+#include "Window.h"
 
 __BEGIN_API
 
@@ -18,39 +20,55 @@ class ThreadHandler{
     ~ThreadHandler(){}
 
     static void execute(void * name){
-        engineThread = new Thread(EngineExecutor);
+        
+        gameHandler = std::make_shared<GameHandler>();
+        gameHandler->init();
+
+        gameloopThread = new Thread(gameLoopExecutor);
+        windowThread = new Thread(windowExecutor);
         spaceShipThread = new Thread(SpaceShipExecutor);
         
         
-        engineThread->join();
+        gameloopThread->join();
+        windowThread->join();
         spaceShipThread->join();
         
-        delete engineThread;
+        delete gameloopThread;
+        delete windowThread;
         delete spaceShipThread;
     }
 
 
-    static void EngineExecutor(){
-        engine = new Engine(800, 600, 60);
-        engine->init();
-        engine->run();
+    static void gameLoopExecutor(){
+        gameLoop = new GameLoopHandler();
+        gameLoop->gameHandler = gameHandler;
+        gameLoop->gameLoop();
     }
+
+    static void windowExecutor(){
+        window = new Window();
+        window->gameHandler = gameHandler;
+        window->run();
+    }
+
 
     static void SpaceShipExecutor(){
-        engine->gameHandler->spaceShip->run();
+        gameHandler->spaceShip->run();
     }
 
-    static Thread* engineThread;
+    static Thread* gameloopThread;
     static Thread* spaceShipThread;
+    static Thread* windowThread;
     //static Thread* keyboardThread;
-    //static Thread* windowThread;
     //static Thread* collisionAndLifeThread;
     //static Thread* enemySpaceShipThread;
     //static Thread* bombHandlerThread;
     //static Thread* bossThread;
 
-    static SpaceShip* spaceShip;
-    static Engine* engine; 
+    static GameLoopHandler* gameLoop;
+    static Window* window;
+    static std::shared_ptr<GameHandler> gameHandler;
+
 
 
 };

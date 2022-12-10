@@ -38,6 +38,7 @@ class EnemySpaceShip{
    int dAnim;
    bool dAnim_complete;
    bool fire;
+   bool isToUpdate;
    
    void update(double dt);
    void load_assets();

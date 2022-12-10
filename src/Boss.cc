@@ -6,7 +6,6 @@
 #include <iostream>
 
 __BEGIN_API
-const int BOSS_HP = 50;
 
 Boss::Boss(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s),
 						     enemyLaserSpeed(Vector(-400, 0)),
@@ -41,25 +40,6 @@ void Boss::hit() {
    }
 }
 
-void Boss::draw(std::shared_ptr<Sprite> bossShip, std::shared_ptr<Sprite> bossDeath) {
-   chooseFrame();
-   if (!dead) {
-      bossShip -> draw_boss(row, col, 200, 200, centre, 0);
-   }
-   else {
-      if (dAnim < 5) 
-	 deathAnim(bossDeath);
-      else
-	 dAnim_complete = true;
-   }
-}
-
-//this function is going to be a little interesting
-void Boss::deathAnim(std::shared_ptr<Sprite> bossDeath) {
-   bossDeath->draw_death_anim(dAnim, centre, 0);
-   dAnim++;
-}
-
 // update Boss movement
 void Boss::update(double dt) {
    // update position
@@ -87,28 +67,5 @@ void Boss::update(double dt) {
    }
 }
 
-void Boss::chooseFrame() {
-   if (lives > BOSS_HP){
-      spriteSheetIndex = 0;
-   }
-
-   if (lives <= BOSS_HP && spriteSheetIndex < 3) { 
-      fireSpeed = rand()%50+20;
-      speed = speed * 1.1;
-      bossSize = 70;
-      spriteSheetIndex++;
-   }
-
-   if (lives <= 20 && spriteSheetIndex < 8) {
-      fireSpeed = rand()%30+20;
-      speed = speed * 1.1;
-      bossSize = 60;
-      spriteSheetIndex++;
-   }
-
-   row = spriteSheetIndex / 3;
-   col = spriteSheetIndex % 3;
-
-}
 
 __END_API

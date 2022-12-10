@@ -22,12 +22,20 @@ const int WEAPON_DELAY_MISSILE = 20;
 const Vector SPACE_SHIP_PROJECTILE_SPEED = Vector(500, 0);
 
 
-GameHandler::GameHandler(int w, int h, int f):
+GameHandler::GameHandler():
    gameOver(false),
+   generateBomb(false),
+   spawnEnemies(false),
+   isToUpdate(false),
+   isToDraw(false),
+   bossExists(false),
+   isToBossFire(false),
    lives(3),
-   displayWidth(w),
-   displayHeight(h),
-   framesPerSec(f)
+   displayWidth(800),
+   displayHeight(600),
+   framesPerSec(60),
+   dtToUpdate(0.0)
+
 {
    
 }
@@ -50,7 +58,39 @@ GameHandler::~GameHandler() {
    spawnBombsTimer.reset();
 }
 
-void GameHandler::init(){
+
+void GameHandler::init() {
+   al_init();
+   if ((_display = al_create_display(800, 600)) == NULL) {
+      std::cout << "Cannot initialize the display\n";
+      exit(1); 
+   }   
+   // initialize addons
+   al_init_primitives_addon();
+   al_init_font_addon();
+   al_init_ttf_addon();
+   al_init_image_addon();
+   // initialize our timers
+   if ((_timer = al_create_timer(1.0 / 60)) == NULL) {
+      std::cout << "error, could not create timer\n";
+      exit(1);
+   }
+   if ((_eventQueue = al_create_event_queue()) == NULL) {
+      std::cout << "error, could not create event queue\n";
+      exit(1);
+   }
+   // register our allegro _eventQueue
+   al_register_event_source(_eventQueue, al_get_display_event_source(_display)); 
+   al_register_event_source(_eventQueue, al_get_timer_event_source(_timer));
+   al_start_timer(_timer);
+   // install keyboard
+   if (!al_install_keyboard()) {
+      std::cerr << "Could not install keyboard\n";
+   }
+   
+   // register keyboard
+   al_register_event_source(_eventQueue, al_get_keyboard_event_source());
+
    setupTimers();
    setupSpaceShip();
    ALLEGRO_PATH *path = setupPath();
@@ -61,7 +101,6 @@ void GameHandler::init(){
 }
 
 
-// ---------------- SETUP FUNCTIONS ------------------
 void GameHandler::setupTimers(){
    gameOverTimer = std::make_shared<Timer> (framesPerSec); gameOverTimer->create();
    laserShotsTimer = std::make_shared<Timer> (framesPerSec); laserShotsTimer->create();   
@@ -106,138 +145,6 @@ void GameHandler::setupSprites(){
    bossShip   = std::make_shared<Sprite> ("bossv2.png");
 }
 
-void GameHandler::update(double dt) {
-   updateBackground(dt);
-   if (spaceShip) {
-      spaceShip->isToUpdate = true;
-      spaceShip->dtToUpdate = dt;
-      //spaceShip->update(dt);
-   }
-   else if (!spaceShip && lives <= 0) {
-      gameOver = true;
-   }else{
-      //respawnSpaceShip();
-   }
-
-   updateBoss();
-
-   updateProjectilePosition(dt);
-
-   updateEnemyPosition(dt);
-
-   collision();
-
-   clean();      
-}
-
-
-void GameHandler::updateBackground(double dt){
-   bgMid = bgMid + bgSpeed * dt;
-   if (bgMid.x >= 800) {
-      bgMid.x = 0;
-   }
-}
-
-void GameHandler::respawnSpaceShip() {
-   if (!deadRespawnTimer->isRunning()) {
-      deadRespawnTimer->startTimer();
-   }
-   if (deadRespawnTimer->getCount() > 80) {
-      setupSpaceShip();
-      enemySpaceShipsList.clear();
-      deadRespawnTimer->stopTimer();
-      deadRespawnTimer->resetCount();
-   }
-}
-
-
-void GameHandler::draw() {
-   drawBackground();
-   drawLives();
-   drawShots();
-   drawEnemySpaceShips();
-   drawBombs();
-   drawBoss();
-   
-   if (gameOver) {
-      showGameOverMessage();
-   }
-   else if (spaceShip) {
-      spaceShip->spaceShipSprite = spaceShipSprite;
-      spaceShip->isToDraw = true;
-   }
-}
-
-void GameHandler::drawBackground(){
-   bg->draw_parallax_background(bgMid.x, 0);
-}
-
-void GameHandler::drawShots() {
-   if (!lasersList.empty()) {
-      for (auto it = lasersList.begin(); it != lasersList.end(); ++it) { 
-	      (*it)->draw();
-      }
-   }
-   if (!missileList.empty()) {
-      for (auto it = missileList.begin(); it != missileList.end(); ++it) { 
-	      (*it)->draw();
-      }
-   }
-}
-
-void GameHandler::drawEnemySpaceShips() {
-   if (!enemySpaceShipsList.empty()) {
-      for (auto enemy = enemySpaceShipsList.begin(); enemy != enemySpaceShipsList.end(); ++enemy) {
-	      (*enemy)->draw(enemyShip, enemyDeath);
-	   }
-   }
-}
-
-void GameHandler::drawBombs() {
-   if (!bombEnemiesList.empty()) {
-      for (auto bomb = bombEnemiesList.begin(); bomb != bombEnemiesList.end(); ++bomb) {
-	      (*bomb)->draw(enemyBomb, enemyDeath);
-	   }
-   }
-}
-
-void GameHandler::drawBoss() {
-   if (boss != nullptr) {
-      boss->draw(bossShip, enemyDeath);
-   }
-}
-
-void GameHandler::drawLives() {
-   Point centre(displayWidth-70, displayWidth-50);
-   if (lives > 0) {
-	  al_draw_rectangle(displayWidth - 70, 50, displayWidth - 50, 70,
-			    al_map_rgb(0, 255, 0), 5);
-   }
-   if (lives > 1) {
-      al_draw_rectangle(displayWidth - 110, 50, displayWidth - 90, 70,
-			al_map_rgb(0, 255, 0), 5);
-   }
-   if (lives > 2) {
-      al_draw_rectangle(displayWidth - 150, 50, displayWidth - 130, 70,
-			al_map_rgb(0, 255, 0) , 5);
-   }
-}
-
-void GameHandler::showGameOverMessage() {
-   if (gameOver) {
-      ALLEGRO_FONT* font = al_load_font("DavidCLM-BoldItalic.ttf", 64, 0);
-      al_draw_text(font, al_map_rgb(204, 3, 3), 400, 300, ALLEGRO_ALIGN_CENTRE, "GAME OVER!");
-      enemySpaceShipsList.clear();
-      boss = nullptr;
-      bombEnemiesList.clear();
-      lasersList.clear();
-      missileList.clear();
-   }
-}
-//-----------------------------
-
-
-
 void GameHandler::input(ALLEGRO_KEYBOARD_STATE& kb) {
    if (spaceShip) {
       switch (spaceShip->input(kb)) {
@@ -257,7 +164,6 @@ void GameHandler::input(ALLEGRO_KEYBOARD_STATE& kb) {
       }
    }
 }
-
 
 bool GameHandler::is_game_over() {
    if (gameOver && gameOverTimer->getCount() > GAME_OVER_WAIT_TIME) {
@@ -305,99 +211,6 @@ void GameHandler::bossFire(){
    addMissile(boss->centre+Point(0,-50), al_map_rgb(204, 3, 3), aim, true);
 }
 
-void GameHandler::spawnBoss() {
-   addBoss(Point(850, 300), al_map_rgb(155, 0, 0), Vector(-50, 0));
-   bossExists = true;
-
-}
-
-void GameHandler::addBoss(const Point& cen, const ALLEGRO_COLOR& col, const Vector& spd) {
-   boss = std::make_shared<Boss> (cen, col, spd);
-}
-
-void GameHandler::updateBoss() {
-   if (bossTimer->getCount() >= 60) {
-      spawnBoss();
-      bossTimer->stopTimer();
-      bossTimer->resetCount();
-   }
-}
-
-void GameHandler::updateProjectilePosition(double dt) {
-   if (!lasersList.empty()) {
-      for (auto it = lasersList.begin(); it != lasersList.end(); ++it) {
-	      (*it)->update(dt);
-      }
-   }
-
-      if (!missileList.empty()) {
-      for (auto it = missileList.begin(); it != missileList.end(); ++it) {
-	      (*it)->update(dt);
-      }
-   }
-}
-
-void GameHandler::updateEnemyPosition(double dt) {
-   updateEnemySpaceShipPosition(dt);
-   updateBombPosition(dt);
-   updateBossPosition(dt);
-   
-   //spawn enemies every 5 seconds
-   if(spawnEnemyShipsTimer->getCount() >= 5){
-      spawn();
-      spawnEnemyShipsTimer->srsTimer();
-   }
-
-   //spawn bombs every 30 seconds
-   if(spawnBombsTimer->getCount() >= 30){
-      Point pt(800, 200);
-      pt.y=pt.y+(rand()%200);
-      addBomb(pt, al_map_rgb(204,3,3), Vector(-60, 0));
-      spawnBombsTimer->srsTimer();
-   }
-}
-
-void GameHandler::updateEnemySpaceShipPosition(double dt) {
-   if (!enemySpaceShipsList.empty()) {
-      for (auto enemy = enemySpaceShipsList.begin(); enemy != enemySpaceShipsList.end(); ++enemy) {
-	      (*enemy)->update(dt);
-         if((*enemy)->fire){
-            int shotPosition = rand() % 2 + 1;
-
-            if(shotPosition == 1){
-               addLaser((*enemy)->centre, (*enemy)->color, (*enemy)->enemyLaserSpeed + Vector(0, -40));
-            }else{
-               addLaser((*enemy)->centre, (*enemy)->color, (*enemy)->enemyLaserSpeed + Vector(0, 40));
-            }
-
-            (*enemy)->fire = false;
-         }
-      }
-   }
-}
-
-void GameHandler::updateBombPosition(double dt) {
-   if (!bombEnemiesList.empty()) {
-      for (auto enemy = bombEnemiesList.begin(); enemy != bombEnemiesList.end(); ++enemy) {
-         (*enemy)->update(dt);
-         if((*enemy)->fire){
-            circleLaser((*enemy));
-            (*enemy)->fire = false;
-         }
-      }
-   }
-}
-
-void GameHandler::updateBossPosition(double dt) {
-   if(boss != nullptr){
-      if(!boss->dead){
-         boss->update(dt);
-         if(boss->fire){
-            bossFire();
-         }
-      }
-   }
-}
 
 
 void GameHandler::collision() {

@@ -25,7 +25,7 @@ extern const Vector PLAYER_PROJECTILE_SPEED;
 
 class GameHandler{
   public:
-   GameHandler(int w, int h, int f);
+   GameHandler();
    ~GameHandler();
 
    void update(double);
@@ -33,26 +33,6 @@ class GameHandler{
    void init();
    void input(ALLEGRO_KEYBOARD_STATE&);   
    bool is_game_over();
-
-   void drawBossIncomingMessage();
-   void drawLives();
-   void drawBackground();
-   void drawShots();
-   void drawEnemySpaceShips();
-   void drawBombs();
-   void drawBoss();
-   void showGameOverMessage();
-
-   void updateBoss();
-   void updateBackground(double dt);
-   void updateProjectilePosition(double);
-   void updateEnemyPosition(double);
-   void updateEnemySpaceShipPosition(double dt);
-   void updateBombPosition(double dt);
-   void updateBossPosition(double dt);
-   
-   void respawnSpaceShip();
-
 
    void collision();
    void checkCollisionOnPlayer();
@@ -88,7 +68,14 @@ class GameHandler{
    bool doColorsMatch(const ALLEGRO_COLOR&, const ALLEGRO_COLOR&);
    bool isPointBoxCollision(const Point&, const Point&, const int&);
 
-  
+   
+
+  // allegro objects
+   ALLEGRO_TIMER *_timer;
+   ALLEGRO_EVENT_QUEUE *_eventQueue;
+   ALLEGRO_DISPLAY *_display;
+
+
    std::shared_ptr<Timer> gameOverTimer;
    std::shared_ptr<Timer> laserShotsTimer;
    std::shared_ptr<Timer> missileShotsTimer;
@@ -120,15 +107,19 @@ class GameHandler{
    
    // flags
    bool gameOver;
+   bool generateBomb;
+   bool spawnEnemies;
+   bool isToUpdate;
+   bool isToDraw;
 
-   private:   
    bool bossExists = false;
-   bool _Boss = false;
+   bool isToBossFire;
 
    int lives;
    int displayWidth;
    int displayHeight;
    int framesPerSec;
+   double dtToUpdate;
 };
 __END_API
 #endif

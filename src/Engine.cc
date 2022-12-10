@@ -1,3 +1,5 @@
+
+/*
 #include "Engine.h"
 
 #include <allegro5/allegro_primitives.h>
@@ -66,7 +68,6 @@ void Engine::init() {
 
 
 void Engine::run() {
-   std::cout<<"oi";
    float prevTime = 0;
    
    if(!gameHandler){
@@ -128,3 +129,4 @@ void Engine::draw() {
 }   
 
 __END_API
+*/

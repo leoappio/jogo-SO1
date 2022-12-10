@@ -14,8 +14,6 @@ struct Vector;
 class Timer;
 class Sprite;
 
-extern const int BOSS_HP;
-
 class Boss{
 
   private:
@@ -37,6 +35,7 @@ class Boss{
    int lives;
    int dAnim;
    bool targetable;
+   bool isToUpdate;
    int col, row, spriteSheetIndex;
 
    

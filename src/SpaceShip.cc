@@ -23,7 +23,6 @@ void SpaceShip::run(){
    while(lives <= 3){
       hit();
       update();
-      draw();
       Thread::yield();
    }
 }
@@ -62,14 +61,6 @@ act::action SpaceShip::input(ALLEGRO_KEYBOARD_STATE& kb) {
   }
 
   return act::action::NO_ACTION;
-}
-
-void SpaceShip::draw() {
-   //std::cout<<isToDraw;
-   if(isToDraw){
-      spaceShipSprite->draw_region(row, col, 47.0, 40.0, centre, 0);
-   }
-
 }
 
 void SpaceShip::update() {

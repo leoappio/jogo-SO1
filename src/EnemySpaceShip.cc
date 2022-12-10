@@ -36,21 +36,6 @@ void EnemySpaceShip::hit() {
    if (lives < 1)
       dead = true;
 }
-	
-void EnemySpaceShip::draw(std::shared_ptr<Sprite> enemyShip, std::shared_ptr<Sprite> enemyDeath) {
-   if (!dead) {
-      enemyShip->draw_tinted(centre, color, 0);
-   }
-   else {
-      if (dAnim < 5) deathAnim(enemyDeath);
-      else dAnim_complete = true;
-   }
-}
-
-void EnemySpaceShip::deathAnim(std::shared_ptr<Sprite> enemyDeath) {
-   enemyDeath->draw_death_anim(dAnim, centre, 0);
-   dAnim++;
-}
 
 void EnemySpaceShip::update(double dt) {
    centre = centre + speed * dt;

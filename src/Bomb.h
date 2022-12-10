@@ -35,6 +35,7 @@ class Bomb{
    int dAnim;
    bool dAnim_complete;
    bool fire, fired;
+   bool isToUpdate;
   
    void update(double dt);
    void load_assets();
