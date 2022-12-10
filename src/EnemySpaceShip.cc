@@ -10,6 +10,8 @@
 #include "Sprite.h"
 #include <iostream>
 
+__BEGIN_API
+
 EnemySpaceShip::EnemySpaceShip(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s), dead(false),
    enemyLaserSpeed(Vector(-400, 0)),
    fireSpeed(rand() % 50 + 30),
@@ -71,3 +73,5 @@ void EnemySpaceShip::update(double dt) {
       delayTimer->startTimer();
    }
 }
+
+__END_API

@@ -2,6 +2,9 @@
 #include "Missile.h"
 #include <cmath>
 #include "Sprite.h"
+#include "traits.h"
+
+__BEGIN_API
 
 Missile::Missile(Point p, ALLEGRO_COLOR c, Vector s, bool isFromBoss): centre(p), color(c), speed(s)
 {
@@ -58,3 +61,4 @@ bool Missile::in_bound() {
    return true;
 }
 
+__END_API

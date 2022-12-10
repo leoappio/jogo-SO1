@@ -1,15 +1,11 @@
-/**
- * @file Engine.h
- */
-
 #ifndef ENGINE_H
 #define ENGINE_H
 
 #include <allegro5/allegro.h>
-#include <memory>
 #include <string>
-
-class GameHandler;
+#include "traits.h"
+#include <memory>
+__BEGIN_API
 
 class Engine {
   public:
@@ -48,4 +44,5 @@ class Engine {
    std::shared_ptr<GameHandler> _gameHandler; 
 };
 
+__END_API
 #endif

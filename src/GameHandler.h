@@ -1,7 +1,3 @@
-/**
- * @file GameHandler.h
- */
-
 #ifndef GAMEHANDLER_H
 #define GAMEHANDLER_H
 
@@ -9,27 +5,18 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-#include <list>
-#include <vector>
-#include <memory>
-#include <string>
-
 #include "Vector.h"
 #include "Missile.h"
 #include "Laser.h"
 #include "SpaceShip.h"
 #include "Bomb.h"
 #include "Boss.h"
+#include <list>
+#include <vector>
+#include <memory>
+#include <string>
 
-struct Point;
-class Timer;
-class EnemySpaceShip;
-class Bomb;
-class SpaceShip;
-class Sprite;
-class Missile;
-class Laser;
-
+__BEGIN_API
 
 extern const int GAME_OVER_WAIT_TIME;
 extern const int WEAPON_DELAY_LASER;
@@ -143,5 +130,5 @@ class GameHandler{
    int displayHeight;
    int framesPerSec;
 };
-
+__END_API
 #endif

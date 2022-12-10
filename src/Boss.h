@@ -1,7 +1,3 @@
-/**
- * @file Boss.h
- **/
-
 #ifndef BOSS_H
 #define BOSS_H
 
@@ -10,6 +6,8 @@
 #include <memory>
 #include "Point.h"
 #include "Vector.h"
+
+__BEGIN_API
 
 struct Point;
 struct Vector;
@@ -49,4 +47,6 @@ class Boss{
    void chooseFrame();
    void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);
 };
+
+__END_API
 #endif

@@ -1,10 +1,3 @@
-/**
- * @file Sprite.h
- * @brief Declaration and implementation of Sprite class- handles loading images for sprites
- *
- * @author
- * @bug
- */
 #ifndef SPRITE_H
 #define SPRITE_H
 
@@ -12,6 +5,9 @@
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include "traits.h"
+
+__BEGIN_API
 
 class Sprite {
   private:
@@ -124,5 +120,6 @@ class Sprite {
 
    
 };
+__END_API
 
 #endif

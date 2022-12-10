@@ -1,10 +1,4 @@
-/**
- * @file GameHandler.cc
- */
-
 #include "GameHandler.h"
-#include <iostream>
-#include <fstream>
 #include "Point.h"
 #include "Vector.h"
 #include "SpaceShip.h"
@@ -16,9 +10,12 @@
 #include "EnemySpaceShip.h"
 #include "Bomb.h"
 #include "Boss.h"
+#include <iostream>
+#include <fstream>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
+__BEGIN_API
 const int GAME_OVER_WAIT_TIME = 100;
 const int WEAPON_DELAY_LASER = 6;
 const int WEAPON_DELAY_MISSILE = 20;
@@ -685,3 +682,4 @@ bool GameHandler::doHitboxesIntersect(const Point& centre1, const int& size1,
 	   abs(centre1.y - centre2.y) < (size1 + size2));
 }
 
+__END_API

@@ -9,8 +9,9 @@
 #include "Action.h"
 #include "Laser.h"
 #include "Missile.h"
+#include "traits.h"
 
-
+__BEGIN_API
 SpaceShip::SpaceShip(Point p, ALLEGRO_COLOR c) : centre(p), color(c), speed(Vector(0, 0)),
 					   lives(3), row(0), col(0), dead(false)
 {
@@ -91,3 +92,4 @@ void SpaceShip::checkBoundary() {
    else if (centre.y < 16)
       centre.y = 16;
 }
+__END_API

@@ -1,6 +1,8 @@
 #ifndef ACTION_H
 #define ACTION_H
+#include "traits.h"
 
+__BEGIN_API
 namespace act {
 
    enum action {
@@ -15,4 +17,5 @@ namespace act {
    };
 
 }
+__END_API
 #endif

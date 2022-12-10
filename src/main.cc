@@ -1,15 +1,11 @@
-/**
- * @file main.cc
- * @brief
- */
-
-
 #include "Engine.h"
 #include <allegro5/allegro.h>
 #include <ctime>
 #include <cstdlib>
 #include <string>
 #include <iostream>
+
+__USING_API
 
 int main() {
    srand(time(0));
@@ -19,7 +15,4 @@ int main() {
    shooty.run();
 
    return 0;
-
 }
-
-

@@ -1,21 +1,13 @@
-/**
- * @file Point.h
- * @brief Definition of the Point struct
- *  
- * This contains the public member variables of the Point struct
- * describes a position on a grid
- *
- * @author Cody Barnson
- * @bug No known bugs
- */
-
 #ifndef _POINT_H
 #define _POINT_H
 
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
+#include "threads.h"
+#include "traits.h"
 
+__BEGIN_API
 struct Vector;
 
 /**
@@ -62,5 +54,7 @@ struct Point {
    void rollRandomY();
    
 };
+
+__END_API
 
 #endif

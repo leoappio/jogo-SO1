@@ -1,7 +1,3 @@
-/**
- * @file Bomb.h
- **/
-
 #ifndef BOMB_H
 #define BOMB_H
 
@@ -15,11 +11,12 @@
 #include "Point.h"
 #include "Vector.h"
 #include "Sprite.h"
+#include "threads.h"
+__BEGIN_API
 
 struct Point;
 struct Vector;
 class Timer;
-
 class Bomb{
    
   private:
@@ -46,4 +43,5 @@ class Bomb{
    void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);
 };
 
+__END_API
 #endif

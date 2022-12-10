@@ -13,6 +13,8 @@
 #include "GameHandler.h"
 #include "Timer.h"
 
+__BEGIN_API
+
 Engine::Engine(int w, int h, int fps) : _displayWidth(w), _displayHeight(h), 
 					_fps(fps),
 					_timer(NULL),
@@ -121,3 +123,5 @@ void Engine::draw() {
       _gameHandler->draw();
    }
 }   
+
+__END_API

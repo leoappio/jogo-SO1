@@ -1,15 +1,9 @@
-/**
- * @file Timer.cc
- * @brief
- *
- * @author
- * @bug
- */
 
 #include "Timer.h"
-#include <iostream>
 #include <stdexcept>
+#include <iostream>
 
+__BEGIN_API
 Timer::Timer(int fps) : _timer(NULL), _fps(fps) {
 
 }
@@ -59,3 +53,4 @@ bool Timer::isCreated() const {
       return false;
    return true;
 }
+__END_API

@@ -1,11 +1,7 @@
-/**
- * @file Bomb.cc
- **/
-
 #include "Bomb.h"
 #include "Timer.h"
 
-
+__BEGIN_API
 Bomb::Bomb(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s), dead(false) {
    lives = 3;
    size = 20;   
@@ -74,3 +70,5 @@ void Bomb::update(double dt) {
       delayTimer->resetCount();
    }
 }
+
+__END_API

@@ -1,20 +1,9 @@
-/**
- *  @file Vector.h
- *  @brief Definition of the Vector class
- *
- *
- *  @author Cody Barnson
- *  @bug No known bugs
- */
-
 #ifndef _VECTOR_H
 #define _VECTOR_H
 
-/**
- * @struct Vector
- * @brief represents the change in position of x and y
- */
+#include "traits.h"
 
+__BEGIN_API
 class Point;
 struct Vector {
    double x;
@@ -49,4 +38,5 @@ struct Vector {
    
 };
 
+__END_API
 #endif

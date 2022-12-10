@@ -1,12 +1,6 @@
-/**
- * @file Missile.h
- * @brief
- *
- * @author
- * @bug
- */
 #ifndef MISSILE_H
 #define MISSILE_H
+
 
 #include <allegro5/allegro.h>
 
@@ -16,6 +10,9 @@
 #include "Point.h"
 #include "Vector.h"
 #include "Sprite.h"
+#include "traits.h"
+
+__BEGIN_API
 
 class Missile{   
   public:
@@ -38,5 +35,5 @@ class Missile{
    
 };
 
-
+__END_API
 #endif

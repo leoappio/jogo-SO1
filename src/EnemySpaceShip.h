@@ -1,7 +1,3 @@
-/**
- * @file EnemySpaceShip.h
- **/
-
 #ifndef CREEP_H
 #define CREEP_H
 
@@ -13,6 +9,9 @@
 #include "EnemySpaceShip.h"
 #include "Point.h"
 #include "Vector.h"
+
+
+__BEGIN_API
 
 
 struct Point;
@@ -46,4 +45,5 @@ class EnemySpaceShip{
    void hit();
    void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);  
 };
+__END_API
 #endif

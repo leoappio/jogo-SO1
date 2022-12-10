@@ -1,11 +1,10 @@
-
 # Cody Barnson
 # Thur Mar 31, 2016
 # Makefile for allegro game project
 
 # declaration of variables
 CC = g++
-CCFLAGS = -Wall -g -std=c++11 -I/home/lib2720/allegro/include
+CCFLAGS = -Wall -g -std=c++11 -I/usr/include/allegro5
 
 # file names
 NONTEST = main.cc main.o
@@ -45,8 +44,7 @@ main: $(OBJECTS)
 
 # clean out the directory but keep executables with command "clean"
 clean : 
-	rm -f *~ *.o *.d *.gch main tests
-
+	rm -f *~ *.o *.d *.gch main
 
 
 

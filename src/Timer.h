@@ -1,15 +1,10 @@
-/**
- * @file Timer.h
- * @brief
- *
- * @author
- * @bug
- */
 #ifndef TIMER_H
 #define TIMER_H
 
 #include <allegro5/allegro.h>
+#include "traits.h"
 
+__BEGIN_API
 class Timer {
 
   public:
@@ -34,4 +29,5 @@ class Timer {
    
 };
 
+__END_API
 #endif

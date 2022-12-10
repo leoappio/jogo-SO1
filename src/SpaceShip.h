@@ -8,13 +8,13 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
-
-#include <memory>
 #include "Action.h"
 #include "Point.h"
 #include "Vector.h"
+#include "traits.h"
+#include <memory>
 
-
+__BEGIN_API
 struct Point;
 struct Vector;
 class Sprite;
@@ -43,6 +43,6 @@ class SpaceShip {
    void shipAnimation();
    void checkBoundary();
 };
-
+__END_API
 #endif
 

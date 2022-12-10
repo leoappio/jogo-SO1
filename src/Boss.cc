@@ -1,16 +1,11 @@
-/**
- * @file Boss.cc
- **/
-
 #include "Boss.h"
-
 #include "Point.h"
 #include "Vector.h"
 #include "Timer.h"
 #include "Sprite.h"
 #include <iostream>
 
-
+__BEGIN_API
 const int BOSS_HP = 50;
 
 Boss::Boss(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s),
@@ -115,3 +110,5 @@ void Boss::chooseFrame() {
    col = spriteSheetIndex % 3;
 
 }
+
+__END_API
