@@ -10,6 +10,7 @@
 #include "GameLoopHandler.h"
 #include "Window.h"
 #include "Keyboard.h"
+#include "EnemySpawn.h"
 
 __BEGIN_API
 
@@ -28,18 +29,21 @@ class ThreadHandler{
         gameloopThread = new Thread(gameLoopExecutor);
         windowThread = new Thread(windowExecutor);
         keyboardThread = new Thread(keyboardExecutor);
-        spaceShipThread = new Thread(SpaceShipExecutor);
+        spaceShipThread = new Thread(spaceShipExecutor);
+        enemySpawnThread = new Thread(enemySpawnExecutor);
         
         
         gameloopThread->join();
         windowThread->join();
         keyboardThread->join();
         spaceShipThread->join();
+        enemySpawnThread->join();
         
         delete gameloopThread;
         delete windowThread;
         delete keyboardThread;
         delete spaceShipThread;
+        delete enemySpawnThread;
     }
 
 
@@ -61,8 +65,14 @@ class ThreadHandler{
         keyboard->run();
     }
 
+    static void enemySpawnExecutor(){
+        enemySpawn = new EnemySpawn();
+        enemySpawn->gameHandler = gameHandler;
+        enemySpawn->run();
+    }
 
-    static void SpaceShipExecutor(){
+
+    static void spaceShipExecutor(){
         gameHandler->spaceShip->gameHandler = gameHandler;
         gameHandler->spaceShip->run();
     }
@@ -71,14 +81,16 @@ class ThreadHandler{
     static Thread* spaceShipThread;
     static Thread* windowThread;
     static Thread* keyboardThread;
+    static Thread* enemySpawnThread;
+
     //static Thread* collisionAndLifeThread;
-    //static Thread* enemySpaceShipThread;
     //static Thread* bombHandlerThread;
     //static Thread* bossThread;
 
     static GameLoopHandler* gameLoop;
     static Window* window;
     static Keyboard* keyboard;
+    static EnemySpawn* enemySpawn;
     static std::shared_ptr<GameHandler> gameHandler;
 };
 

@@ -104,7 +104,7 @@ void Window::updateEnemyPosition(double dt) {
 void Window::updateEnemySpaceShipPosition(double dt) {
    if (!gameHandler->enemySpaceShipsList.empty()) {
       for (auto enemy = gameHandler->enemySpaceShipsList.begin(); enemy != gameHandler->enemySpaceShipsList.end(); ++enemy) {
-	      (*enemy)->isToUpdate = true;
+	      (*enemy)->update(dt);
          if((*enemy)->fire){
             int shotPosition = rand() % 2 + 1;
 

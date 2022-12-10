@@ -27,11 +27,8 @@ class GameHandler{
   public:
    GameHandler();
    ~GameHandler();
-
-   void update(double);
-   void draw();
-   void init();
-   void input(ALLEGRO_KEYBOARD_STATE&);   
+   
+   void init();  
    bool is_game_over();
 
    void collision();
@@ -59,7 +56,6 @@ class GameHandler{
    void addPlayerLaserSingleShot();
    void addPlayerMissileSingleShot();
    
-   void spawn();
    void spawnBoss();
    void bossFire();
    void circleLaser(std::shared_ptr<Bomb> bomb);

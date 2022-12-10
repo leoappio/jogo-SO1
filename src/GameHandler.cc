@@ -152,21 +152,6 @@ bool GameHandler::is_game_over() {
    }
    return false;
 }
-
-
-void GameHandler::spawn() {
-   //spawn enemies in < format if boss doesnt exist
-   if(!bossExists){
-      addEnemySpaceShip(Point(800, 300), al_map_rgb(246, 64, 234),Vector(-180, 0));
-      addEnemySpaceShip(Point(900, 350), al_map_rgb(246, 64, 234), Vector(-180, 0));
-      addEnemySpaceShip(Point(900, 250), al_map_rgb(246, 64, 234), Vector(-180, 0));
-      addEnemySpaceShip(Point(1000, 400), al_map_rgb(246, 64, 234), Vector(-180, 0));
-      addEnemySpaceShip(Point(1000, 200), al_map_rgb(246, 64, 234), Vector(-180, 0));
-      addEnemySpaceShip(Point(1100, 100), al_map_rgb(246, 64, 234), Vector(-180, 0));
-      addEnemySpaceShip(Point(1100, 500), al_map_rgb(246, 64, 234), Vector(-180, 0));
-   }
-}
-
 void GameHandler::circleLaser(std::shared_ptr<Bomb> bomb) {
    
    for(int i = -500; i <= 500; i += 325) {
