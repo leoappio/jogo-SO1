@@ -7,13 +7,8 @@ __BEGIN_API
 void GameLoopHandler::gameLoop() {
     while(!gameHandler->gameOver){
         ALLEGRO_EVENT event;
-        ALLEGRO_KEYBOARD_STATE kb;
         bool redraw = true;
         float crtTime;
-        
-        // input
-        al_get_keyboard_state(&kb);      
-        gameHandler->input(kb);
         
         // get event
         al_wait_for_event(gameHandler->_eventQueue, &event);

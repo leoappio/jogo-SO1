@@ -7,6 +7,7 @@
 #include "Missile.h"
 #include "traits.h"
 #include "thread.h"
+#include "GameHandler.h"
 
 __BEGIN_API
 SpaceShip::SpaceShip(Point p, ALLEGRO_COLOR c) : centre(p), color(c),
@@ -20,9 +21,10 @@ SpaceShip::~SpaceShip() {
 }
 
 void SpaceShip::run(){
-   while(lives <= 3){
+   while(!gameHandler->gameOver){
       hit();
       update();
+      processInputAction();
       Thread::yield();
    }
 }
@@ -37,30 +39,30 @@ void SpaceShip::hit() {
    }
 }
 
-act::action SpaceShip::input(ALLEGRO_KEYBOARD_STATE& kb) {
-  if (al_key_down(&kb, ALLEGRO_KEY_UP)) {
+void SpaceShip::processInputAction(){
+  if (gameHandler->lastAction == act::action::MOVE_UP) {
      speed.y -= 250;
   }
-  if (al_key_down(&kb, ALLEGRO_KEY_RIGHT)) {
+  if (gameHandler->lastAction == act::action::MOVE_RIGHT) {
      speed.x += 250;
   }
-  if (al_key_down(&kb, ALLEGRO_KEY_DOWN)) {
+  if (gameHandler->lastAction == act::action::MOVE_DOWN) {
      speed.y += 250;
   }
-  if (al_key_down(&kb, ALLEGRO_KEY_LEFT)) {
+  if (gameHandler->lastAction == act::action::MOVE_LEFT) {
      speed.x -= 250;
   }
-  if (al_key_down(&kb, ALLEGRO_KEY_SPACE)) {
-     return act::action::FIRE_PRIMARY;
+  if (gameHandler->lastAction == act::action::FIRE_PRIMARY) {
+     gameHandler->addPlayerLaserSingleShot();
   }
-  if (al_key_down(&kb, ALLEGRO_KEY_1)) {
-     return act::action::FIRE_SECONDARY;
+  if (gameHandler->lastAction == act::action::FIRE_SECONDARY) {
+     gameHandler->addPlayerMissileSingleShot();
   }
-  if (al_key_down(&kb, ALLEGRO_KEY_ESCAPE)) {
-     return act::action::QUIT_GAME;
+  if (gameHandler->lastAction == act::action::QUIT_GAME) {
+     gameHandler->gameOver = true;
   }
 
-  return act::action::NO_ACTION;
+  gameHandler->lastAction = act::action::NO_ACTION;
 }
 
 void SpaceShip::update() {
@@ -69,10 +71,9 @@ void SpaceShip::update() {
       shipAnimation();
       speed = Vector(0, 0);
       checkBoundary();
-      //isToUpdate = false;
+      isToUpdate = false;
    }
 }
-
 
 void SpaceShip::shipAnimation() {
    if (speed.x > 0) {
@@ -87,7 +88,6 @@ void SpaceShip::shipAnimation() {
       else row = 1;
    }
 }
-
 
 void SpaceShip::checkBoundary() {   
    if (centre.x > 800 - 16)

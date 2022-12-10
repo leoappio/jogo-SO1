@@ -111,6 +111,7 @@ class GameHandler{
    bool spawnEnemies;
    bool isToUpdate;
    bool isToDraw;
+   act::action lastAction;
 
    bool bossExists = false;
    bool isToBossFire;

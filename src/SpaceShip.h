@@ -1,7 +1,3 @@
-/**
- * @file SpaceShip.h
- */
-
 #ifndef SPACESHIP_H
 #define SPACESHIP_H
 
@@ -24,7 +20,6 @@ class SpaceShip {
   public:
    Point centre;  
    ALLEGRO_COLOR color;
-   std::shared_ptr<Sprite> spaceShipSprite;
    
    Vector speed;
    float lives; 
@@ -42,9 +37,10 @@ class SpaceShip {
    ~SpaceShip();
    void hit();
    void run();
-   void draw();
    void update();
+   void processInputAction();
    act::action input(ALLEGRO_KEYBOARD_STATE&);
+   std::shared_ptr<GameHandler> gameHandler;
 
   private:
    void shipAnimation();

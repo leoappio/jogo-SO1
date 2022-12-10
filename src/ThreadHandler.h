@@ -9,6 +9,7 @@
 #include "GameHandler.h"
 #include "GameLoopHandler.h"
 #include "Window.h"
+#include "Keyboard.h"
 
 __BEGIN_API
 
@@ -26,15 +27,18 @@ class ThreadHandler{
 
         gameloopThread = new Thread(gameLoopExecutor);
         windowThread = new Thread(windowExecutor);
+        keyboardThread = new Thread(keyboardExecutor);
         spaceShipThread = new Thread(SpaceShipExecutor);
         
         
         gameloopThread->join();
         windowThread->join();
+        keyboardThread->join();
         spaceShipThread->join();
         
         delete gameloopThread;
         delete windowThread;
+        delete keyboardThread;
         delete spaceShipThread;
     }
 
@@ -51,15 +55,22 @@ class ThreadHandler{
         window->run();
     }
 
+    static void keyboardExecutor(){
+        keyboard = new Keyboard();
+        keyboard->gameHandler = gameHandler;
+        keyboard->run();
+    }
+
 
     static void SpaceShipExecutor(){
+        gameHandler->spaceShip->gameHandler = gameHandler;
         gameHandler->spaceShip->run();
     }
 
     static Thread* gameloopThread;
     static Thread* spaceShipThread;
     static Thread* windowThread;
-    //static Thread* keyboardThread;
+    static Thread* keyboardThread;
     //static Thread* collisionAndLifeThread;
     //static Thread* enemySpaceShipThread;
     //static Thread* bombHandlerThread;
@@ -67,10 +78,8 @@ class ThreadHandler{
 
     static GameLoopHandler* gameLoop;
     static Window* window;
+    static Keyboard* keyboard;
     static std::shared_ptr<GameHandler> gameHandler;
-
-
-
 };
 
 __END_API

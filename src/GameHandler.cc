@@ -34,8 +34,8 @@ GameHandler::GameHandler():
    displayWidth(800),
    displayHeight(600),
    framesPerSec(60),
-   dtToUpdate(0.0)
-
+   dtToUpdate(0.0),
+   lastAction(act::action::NO_ACTION)
 {
    
 }
@@ -143,26 +143,6 @@ void GameHandler::setupSprites(){
    enemyDeath = std::make_shared<Sprite> ("explode.png");
    enemyBomb  = std::make_shared<Sprite> ("spikebomb.png");
    bossShip   = std::make_shared<Sprite> ("bossv2.png");
-}
-
-void GameHandler::input(ALLEGRO_KEYBOARD_STATE& kb) {
-   if (spaceShip) {
-      switch (spaceShip->input(kb)) {
-	 case act::action::FIRE_PRIMARY:
-	    if (laserShotsTimer->getCount() > WEAPON_DELAY_LASER) {
-	      addPlayerLaserSingleShot();
-	    }
-	    break;
-	 case act::action::FIRE_SECONDARY:
-	    if (missileShotsTimer->getCount() > WEAPON_DELAY_MISSILE) {
-	      addPlayerMissileSingleShot();
-	    }
-	    break;
-	    
-	 default:
-	    break;
-      }
-   }
 }
 
 bool GameHandler::is_game_over() {
