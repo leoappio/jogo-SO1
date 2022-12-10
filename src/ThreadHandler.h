@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "Keyboard.h"
 #include "EnemySpawn.h"
+#include "CollisionAndLife.h"
 
 __BEGIN_API
 
@@ -31,6 +32,7 @@ class ThreadHandler{
         keyboardThread = new Thread(keyboardExecutor);
         spaceShipThread = new Thread(spaceShipExecutor);
         enemySpawnThread = new Thread(enemySpawnExecutor);
+        collisionAndLifeThread = new Thread(collisionAndLifeExecutor);
         
         
         gameloopThread->join();
@@ -38,12 +40,14 @@ class ThreadHandler{
         keyboardThread->join();
         spaceShipThread->join();
         enemySpawnThread->join();
+        collisionAndLifeThread->join();
         
         delete gameloopThread;
         delete windowThread;
         delete keyboardThread;
         delete spaceShipThread;
         delete enemySpawnThread;
+        delete collisionAndLifeThread;
     }
 
 
@@ -71,6 +75,11 @@ class ThreadHandler{
         enemySpawn->run();
     }
 
+    static void collisionAndLifeExecutor(){
+        collisionAndLife = new CollisionAndLife();
+        collisionAndLife->gameHandler = gameHandler;
+        collisionAndLife->run();
+    }
 
     static void spaceShipExecutor(){
         gameHandler->spaceShip->gameHandler = gameHandler;
@@ -82,8 +91,8 @@ class ThreadHandler{
     static Thread* windowThread;
     static Thread* keyboardThread;
     static Thread* enemySpawnThread;
+    static Thread* collisionAndLifeThread;
 
-    //static Thread* collisionAndLifeThread;
     //static Thread* bombHandlerThread;
     //static Thread* bossThread;
 
@@ -91,6 +100,7 @@ class ThreadHandler{
     static Window* window;
     static Keyboard* keyboard;
     static EnemySpawn* enemySpawn;
+    static CollisionAndLife* collisionAndLife;
     static std::shared_ptr<GameHandler> gameHandler;
 };
 

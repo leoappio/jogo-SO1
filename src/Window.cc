@@ -25,10 +25,8 @@ void Window::update(double dt) {
       gameHandler->spaceShip->isToUpdate = true;
       gameHandler->spaceShip->dtToUpdate = dt;
    }
-   else if (!gameHandler->spaceShip && gameHandler->lives <= 0) {
+   else if (gameHandler->lives <= 0) {
       gameHandler->gameOver = true;
-   }else{
-      respawnSpaceShip();
    }
 
    updateBoss();
@@ -43,19 +41,6 @@ void Window::updateBackground(double dt){
    gameHandler->bgMid = gameHandler->bgMid + gameHandler->bgSpeed * dt;
    if (gameHandler->bgMid.x >= 800) {
       gameHandler->bgMid.x = 0;
-   }
-}
-
-void Window::respawnSpaceShip() {
-   if (!gameHandler->deadRespawnTimer->isRunning()) {
-      gameHandler->deadRespawnTimer->startTimer();
-   }
-   if (gameHandler->deadRespawnTimer->getCount() > 80) {
-      //respawn and reset timers
-      gameHandler->spaceShip->centre = Point(215, 245);
-      gameHandler->enemySpaceShipsList.clear();
-      gameHandler->deadRespawnTimer->stopTimer();
-      gameHandler->deadRespawnTimer->resetCount();
    }
 }
 

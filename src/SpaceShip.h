@@ -22,7 +22,6 @@ class SpaceShip {
    ALLEGRO_COLOR color;
    
    Vector speed;
-   float lives; 
    int row;
    int col;
    bool dead;
@@ -30,6 +29,7 @@ class SpaceShip {
    bool isToDraw;
    bool isToUpdate;
    bool isToHit;
+   int localLife;
    int hitValue;
 
 

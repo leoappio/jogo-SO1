@@ -27,20 +27,10 @@ class GameHandler{
   public:
    GameHandler();
    ~GameHandler();
-   
+
    void init();  
    bool is_game_over();
 
-   void collision();
-   void checkCollisionOnPlayer();
-   void checkCollisionOnEnemies();
-   void checkCollidingEnemyWithPlayer();
-   void clean();
-   void cullPlayer();
-   void cleanLasers();
-   void cleanMissiles();
-   void cullEnemies();
-   
    void setupSpaceShip();
    void setupBackground();
    void setupTimers();
@@ -59,12 +49,6 @@ class GameHandler{
    void spawnBoss();
    void bossFire();
    void circleLaser(std::shared_ptr<Bomb> bomb);
-   bool doHitboxesIntersect(const Point&, const int&,
-			    const Point&, const int&);   
-   bool doColorsMatch(const ALLEGRO_COLOR&, const ALLEGRO_COLOR&);
-   bool isPointBoxCollision(const Point&, const Point&, const int&);
-
-   
 
   // allegro objects
    ALLEGRO_TIMER *_timer;
@@ -76,7 +60,6 @@ class GameHandler{
    std::shared_ptr<Timer> laserShotsTimer;
    std::shared_ptr<Timer> missileShotsTimer;
    std::shared_ptr<Timer> bossTimer;
-   std::shared_ptr<Timer> deadRespawnTimer;
    std::shared_ptr<Timer> spawnEnemyShipsTimer;
    std::shared_ptr<Timer> spawnBombsTimer;
 

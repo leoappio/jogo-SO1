@@ -32,7 +32,6 @@ class Window{
      void updateEnemySpaceShipPosition(double dt);
      void updateBombPosition(double dt);
      void updateBossPosition();
-     void respawnSpaceShip();
      void chooseBossFrame();
 };
 

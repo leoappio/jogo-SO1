@@ -8,11 +8,12 @@
 #include "traits.h"
 #include "thread.h"
 #include "GameHandler.h"
+#include "Timer.h"
 
 __BEGIN_API
 SpaceShip::SpaceShip(Point p, ALLEGRO_COLOR c) : centre(p), color(c),
-                     speed(Vector(0, 0)), lives(3), row(0), col(0), dead(false), dtToUpdate(0.0), isToDraw(false), isToUpdate(false),
-                     isToHit(false), hitValue(0)
+                     speed(Vector(0, 0)), row(0), col(0), dead(false), dtToUpdate(0.0), isToDraw(false), isToUpdate(false),
+                     isToHit(false), localLife(3), hitValue(0)
 {
 }
 
@@ -31,8 +32,18 @@ void SpaceShip::run(){
 
 void SpaceShip::hit() {
    if(isToHit){
-      lives = lives - hitValue;
-      if (lives < 1)
+      localLife = localLife - hitValue;
+
+      if(localLife<=0){
+         gameHandler->lives = gameHandler->lives - 1;
+         gameHandler->enemySpaceShipsList.clear();
+         gameHandler->lasersList.clear();
+         gameHandler->missileList.clear();
+         localLife = 3;
+         centre = Point(215, 245);
+      }
+
+      if (gameHandler->lives < 1)
          dead = true;
       
       isToHit = false;
@@ -53,10 +64,14 @@ void SpaceShip::processInputAction(){
      speed.x -= 250;
   }
   if (gameHandler->lastAction == act::action::FIRE_PRIMARY) {
-     gameHandler->addPlayerLaserSingleShot();
+   if(gameHandler->laserShotsTimer->getCount() >= 6){
+      gameHandler->addPlayerLaserSingleShot();
+   }
   }
   if (gameHandler->lastAction == act::action::FIRE_SECONDARY) {
-     gameHandler->addPlayerMissileSingleShot();
+   if(gameHandler->missileShotsTimer->getCount() >= 20){
+      gameHandler->addPlayerMissileSingleShot();
+   }
   }
   if (gameHandler->lastAction == act::action::QUIT_GAME) {
      gameHandler->gameOver = true;
