@@ -50,13 +50,14 @@ GameHandler::~GameHandler() {
    spawnBombsTimer.reset();
 }
 
-void GameHandler::init() {
+void GameHandler::init(){
    setupTimers();
    setupSpaceShip();
    ALLEGRO_PATH *path = setupPath();
-   setupBackground();
    setupSprites();
+   setupBackground();
    al_destroy_path(path);
+   std::cout<<"game handler init finalizado";
 }
 
 
@@ -108,12 +109,14 @@ void GameHandler::setupSprites(){
 void GameHandler::update(double dt) {
    updateBackground(dt);
    if (spaceShip) {
-      spaceShip->update(dt);
+      spaceShip->isToUpdate = true;
+      spaceShip->dtToUpdate = dt;
+      //spaceShip->update(dt);
    }
    else if (!spaceShip && lives <= 0) {
       gameOver = true;
    }else{
-      respawnSpaceShip();
+      //respawnSpaceShip();
    }
 
    updateBoss();
@@ -160,7 +163,8 @@ void GameHandler::draw() {
       showGameOverMessage();
    }
    else if (spaceShip) {
-      spaceShip->draw(spaceShipSprite, 0);
+      spaceShip->spaceShipSprite = spaceShipSprite;
+      spaceShip->isToDraw = true;
    }
 }
 
@@ -516,7 +520,8 @@ void GameHandler::checkCollidingEnemyWithPlayer() {
          enemySpaceShipsList.begin(); it_enemy_SS != enemySpaceShipsList.end(); ++it_enemy_SS) {
          if (doHitboxesIntersect(spaceShip->centre, 16, (*it_enemy_SS)->centre, (*it_enemy_SS)->size)) {
 	            (*it_enemy_SS)->hit();
-	            spaceShip->hit(1);
+               spaceShip->isToHit = true;
+               spaceShip->hitValue = 1;
          }
       }
 
@@ -524,14 +529,16 @@ void GameHandler::checkCollidingEnemyWithPlayer() {
          bombEnemiesList.begin(); it_bomb != bombEnemiesList.end(); ++it_bomb) {
             if (doHitboxesIntersect(spaceShip->centre, 16, (*it_bomb)->centre, (*it_bomb)->size)) {
                (*it_bomb)->hit();
-               spaceShip->hit(1);
+               spaceShip->isToHit = true;
+               spaceShip->hitValue = 1;
             }
       }
 
       if(boss != nullptr){
          if (doHitboxesIntersect(spaceShip->centre, 16, boss->centre, boss->bossSize)) {
             boss->hit();
-            spaceShip->hit(1);
+            spaceShip->isToHit = true;
+            spaceShip->hitValue = 1;
          }
       }
    }   
@@ -544,8 +551,9 @@ void GameHandler::checkCollisionOnPlayer() {
 	      lasersList.begin(); it_laser != lasersList.end(); ++it_laser) {
          if (!doColorsMatch((*it_laser)->color, spaceShip->color)) {
             if (isPointBoxCollision((*it_laser)->centre, spaceShip->centre, 16)) {	  
-            (*it_laser)->live = false;
-            spaceShip->hit(1);
+               (*it_laser)->live = false;
+               spaceShip->isToHit = true;
+               spaceShip->hitValue = 1;
             }
          }
       }
@@ -556,7 +564,8 @@ void GameHandler::checkCollisionOnPlayer() {
 	      missileList.begin(); it_missile != missileList.end(); ++it_missile) {
          if (!doColorsMatch((*it_missile)->color, spaceShip->color)) {
             if (isPointBoxCollision((*it_missile)->centre, spaceShip->centre, 16)) {
-               spaceShip->hit(1);
+               spaceShip->isToHit = true;
+               spaceShip->hitValue = 1;
             } 
          }
       }

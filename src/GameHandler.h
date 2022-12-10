@@ -88,8 +88,7 @@ class GameHandler{
    bool doColorsMatch(const ALLEGRO_COLOR&, const ALLEGRO_COLOR&);
    bool isPointBoxCollision(const Point&, const Point&, const int&);
 
-   
-  private:   
+  
    std::shared_ptr<Timer> gameOverTimer;
    std::shared_ptr<Timer> laserShotsTimer;
    std::shared_ptr<Timer> missileShotsTimer;
@@ -122,6 +121,7 @@ class GameHandler{
    // flags
    bool gameOver;
 
+   private:   
    bool bossExists = false;
    bool _Boss = false;
 

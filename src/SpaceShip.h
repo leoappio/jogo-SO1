@@ -23,20 +23,27 @@ class Sprite;
 class SpaceShip {
   public:
    Point centre;  
-   ALLEGRO_COLOR color; 
+   ALLEGRO_COLOR color;
+   std::shared_ptr<Sprite> spaceShipSprite;
    
    Vector speed;
    float lives; 
    int row;
    int col;
    bool dead;
+   double dtToUpdate;
+   bool isToDraw;
+   bool isToUpdate;
+   bool isToHit;
+   int hitValue;
 
 
    SpaceShip(Point p, ALLEGRO_COLOR c);
    ~SpaceShip();
-   void hit(int);
-   void draw(std::shared_ptr<Sprite> spaceShipSprite, int flags);
-   void update(double);
+   void hit();
+   void run();
+   void draw();
+   void update();
    act::action input(ALLEGRO_KEYBOARD_STATE&);
 
   private:

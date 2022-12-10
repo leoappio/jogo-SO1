@@ -12,6 +12,7 @@
 #include "Action.h"
 #include "GameHandler.h"
 #include "Timer.h"
+#include "thread.h"
 
 __BEGIN_API
 
@@ -27,7 +28,7 @@ Engine::~Engine() {
    if (_timer != NULL) al_destroy_timer(_timer);
    if (_eventQueue != NULL) al_destroy_event_queue(_eventQueue);
    if (_display != NULL) al_destroy_display(_display);
-   _gameHandler.reset();
+   gameHandler.reset();
 }
 
 void Engine::init() {
@@ -65,15 +66,17 @@ void Engine::init() {
 
 
 void Engine::run() {
+   std::cout<<"oi";
    float prevTime = 0;
    
-   if(!_gameHandler){
-      _gameHandler= std::make_shared<GameHandler> (_displayWidth, _displayHeight, _fps);
-      _gameHandler->init();
+   if(!gameHandler){
+      gameHandler= std::make_shared<GameHandler> (_displayWidth, _displayHeight, _fps);
+      gameHandler->init();
    }
 
    while (!_finish) {
       gameLoop(prevTime);
+      Thread::yield();
    }
 }
 
@@ -85,7 +88,7 @@ void Engine::gameLoop(float& prevTime) {
    
    // input
    al_get_keyboard_state(&kb);      
-   _gameHandler->input(kb);
+   gameHandler->input(kb);
    
    // get event
    al_wait_for_event(_eventQueue, &event);
@@ -109,18 +112,18 @@ void Engine::gameLoop(float& prevTime) {
       redraw = false;      
       draw(); 
       al_flip_display();
-   }  
+   }
 }
 
 void Engine::update(double dt) {
-   if (_gameHandler) {
-      _gameHandler->update(dt);
+   if (gameHandler) {
+      gameHandler->update(dt);
    }
 }
 
 void Engine::draw() {
-   if (_gameHandler) {
-      _gameHandler->draw();
+   if (gameHandler) {
+      gameHandler->draw();
    }
 }   
 

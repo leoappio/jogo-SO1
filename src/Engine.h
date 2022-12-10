@@ -11,6 +11,8 @@ class Engine {
   public:
    Engine(int w, int h, int fps);
    ~Engine();
+
+   std::shared_ptr<GameHandler> gameHandler; 
    
    void init();
    void run();
@@ -39,9 +41,6 @@ class Engine {
    ALLEGRO_DISPLAY *_display;
 
    bool _finish;
-
-   // class to handle with all game components
-   std::shared_ptr<GameHandler> _gameHandler; 
 };
 
 __END_API

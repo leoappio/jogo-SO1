@@ -1,18 +1,11 @@
-#include "Engine.h"
-#include <allegro5/allegro.h>
 #include <ctime>
-#include <cstdlib>
-#include <string>
-#include <iostream>
+#include "system.h"
+#include "Engine.h"
+#include "ThreadHandler.h"
 
 __USING_API
-
 int main() {
-   srand(time(0));
-   
-   Engine shooty(800, 600, 60);
-   shooty.init();
-   shooty.run();
-
+   srand(time(0)); 
+   System::init(&ThreadHandler::execute);
    return 0;
 }

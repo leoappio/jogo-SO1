@@ -1,7 +1,3 @@
-/**
- * @file SpaceShip.cc
- */
-
 #include "SpaceShip.h"
 #include "Point.h"
 #include "Vector.h"
@@ -10,23 +6,36 @@
 #include "Laser.h"
 #include "Missile.h"
 #include "traits.h"
+#include "thread.h"
 
 __BEGIN_API
-SpaceShip::SpaceShip(Point p, ALLEGRO_COLOR c) : centre(p), color(c), speed(Vector(0, 0)),
-					   lives(3), row(0), col(0), dead(false)
+SpaceShip::SpaceShip(Point p, ALLEGRO_COLOR c) : centre(p), color(c),
+                     speed(Vector(0, 0)), lives(3), row(0), col(0), dead(false), dtToUpdate(0.0), isToDraw(false), isToUpdate(false),
+                     isToHit(false), hitValue(0)
 {
-   
 }
 
 SpaceShip::~SpaceShip() {
    
 }
 
+void SpaceShip::run(){
+   while(lives <= 3){
+      hit();
+      update();
+      draw();
+      Thread::yield();
+   }
+}
 
-void SpaceShip::hit(int damage) {
-   lives = lives - damage;
-   if (lives < 1)
-      dead = true;
+void SpaceShip::hit() {
+   if(isToHit){
+      lives = lives - hitValue;
+      if (lives < 1)
+         dead = true;
+      
+      isToHit = false;
+   }
 }
 
 act::action SpaceShip::input(ALLEGRO_KEYBOARD_STATE& kb) {
@@ -55,15 +64,22 @@ act::action SpaceShip::input(ALLEGRO_KEYBOARD_STATE& kb) {
   return act::action::NO_ACTION;
 }
 
-void SpaceShip::draw(std::shared_ptr<Sprite> sprite, int flags) {   
-   sprite->draw_region(row, col, 47.0, 40.0, centre, flags);
+void SpaceShip::draw() {
+   //std::cout<<isToDraw;
+   if(isToDraw){
+      spaceShipSprite->draw_region(row, col, 47.0, 40.0, centre, 0);
+   }
+
 }
 
-void SpaceShip::update(double dt) {
-   centre = centre + speed * dt;
-   shipAnimation();
-   speed = Vector(0, 0);
-   checkBoundary();
+void SpaceShip::update() {
+   if(isToUpdate){
+      centre = centre + speed * dtToUpdate;
+      shipAnimation();
+      speed = Vector(0, 0);
+      checkBoundary();
+      //isToUpdate = false;
+   }
 }
 
 
