@@ -22,11 +22,11 @@ GameHandler::GameHandler():
    spawnEnemies(false),
    isToUpdate(false),
    isToDraw(false),
+   actionsList(act::action::NO_ACTION),
    bossExists(false),
    isToBossFire(false),
    lives(3),
-   dtToUpdate(0.0),
-   actionsList(act::action::NO_ACTION)
+   dtToUpdate(0.0)
 {
    
 }
@@ -77,8 +77,7 @@ void GameHandler::init() {
    if (!al_install_keyboard()) {
       std::cerr << "Could not install keyboard\n";
    }
-   
-   // register keyboard
+
    al_register_event_source(_eventQueue, al_get_keyboard_event_source());
 
    setupTimers();
@@ -87,7 +86,6 @@ void GameHandler::init() {
    setupSprites();
    setupBackground();
    al_destroy_path(path);
-   std::cout<<"game handler init finalizado";
 }
 
 

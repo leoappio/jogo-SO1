@@ -15,8 +15,9 @@ void CPU::Context::load()
 
 CPU::Context::~Context()
 {
-    if (_stack);
+    if(_stack){
         delete this->_stack;
+    }
 }
 
 int CPU::switch_context(Context *from, Context *to)
