@@ -9,42 +9,12 @@
 
 __BEGIN_API
 struct Vector;
-
-/**
- * @struct Point
- * @brief represents a position on the display (grid)
- */
 struct Point {
-   /**
-    * @var double x
-    * represents the x coordinate
-    */
    double x;
-      
-   /**
-    * @var double y
-    * represents the y coordinate
-    */   
    double y;
-
    Point();
-   
-   /**
-    * @fn Point(double a, double b)
-    * @brief Constructor
-    * @param 
-    */
    Point(double a, double b);
-
    ~Point();
-   
-   /**
-    * @fn Point operator + (Vector v)
-    * @brief adds the value of member x of v to this objects member x, and
-    * adds the value of member y of v to this objects member y
-    * @param v represents the change in position for this Point object
-    * @return Point
-    */
    Point operator+(Vector v);
    Point operator+(Point p);
    bool operator==(Point p);

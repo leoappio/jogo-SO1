@@ -14,14 +14,12 @@ class Window{
      void run();
 
      void draw();
-     void drawBossIncomingMessage();
      void drawLives();
      void drawBackground();
      void drawShots();
      void drawEnemySpaceShips();
      void drawBombs();
      void drawBoss();
-     void showGameOverMessage();
      void drawSpaceShip();
 
      void update(double);

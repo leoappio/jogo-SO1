@@ -45,6 +45,7 @@ void Window::updateBackground(double dt){
 }
 
 void Window::updateBoss() {
+   //spawn boss in 60 seconds
    if (gameHandler->bossTimer->getCount() >= 60) {
       gameHandler->bossExists = true;
       gameHandler->bossTimer->stopTimer();
@@ -134,10 +135,7 @@ void Window::draw() {
    drawBombs();
    drawBoss();
    
-   if (gameHandler->gameOver) {
-      showGameOverMessage();
-   }
-   else if (gameHandler->spaceShip) {
+   if (!gameHandler->gameOver && gameHandler->spaceShip) {
       drawSpaceShip();
    }
 }
@@ -255,18 +253,6 @@ void Window::drawLives() {
    if (gameHandler->lives > 2) {
       al_draw_rectangle(800 - 150, 50, 800 - 130, 70,
 			al_map_rgb(0, 255, 0) , 5);
-   }
-}
-
-void Window::showGameOverMessage() {
-   if (gameHandler->gameOver) {
-      ALLEGRO_FONT* font = al_load_font("DavidCLM-BoldItalic.ttf", 64, 0);
-      al_draw_text(font, al_map_rgb(204, 3, 3), 400, 300, ALLEGRO_ALIGN_CENTRE, "GAME OVER!");
-      gameHandler->enemySpaceShipsList.clear();
-      gameHandler->boss = nullptr;
-      gameHandler->bombEnemiesList.clear();
-      gameHandler->lasersList.clear();
-      gameHandler->missileList.clear();
    }
 }
 __END_API

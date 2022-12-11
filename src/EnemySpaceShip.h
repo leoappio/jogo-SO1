@@ -1,5 +1,5 @@
-#ifndef CREEP_H
-#define CREEP_H
+#ifndef ENEMYSPACESHIP_H
+#define ENEMYSPACESHIP_H
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -42,9 +42,7 @@ class EnemySpaceShip{
    
    void update(double dt);
    void load_assets();
-   void deathAnim(std::shared_ptr<Sprite>);
    void hit();
-   void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);  
 };
 __END_API
 #endif

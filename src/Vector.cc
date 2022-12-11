@@ -27,8 +27,8 @@ Vector Vector::operator+(Vector v) {
 }
 
 void Vector::rollRandom() {
-   x = rand() % 200 - 400; // range
-   y = rand() % 400 - 200; // range [-200, 200]
+   x = rand() % 200 - 400;
+   y = rand() % 400 - 200;
 }
 
 void Vector::rollReallyRandom() {

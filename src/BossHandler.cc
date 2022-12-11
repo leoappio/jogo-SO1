@@ -11,7 +11,6 @@ void BossHandler::run(){
         }
 
         if(gameHandler->boss != nullptr && gameHandler->boss->isToUpdate){
-            //std::cout<<"update boss";
             gameHandler->boss->update(gameHandler->dtToUpdate);
         }
 

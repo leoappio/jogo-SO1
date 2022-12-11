@@ -14,7 +14,6 @@ class CollisionAndLife{
      CollisionAndLife(){}
      ~CollisionAndLife(){}
      void run();
-     void collision();
      void checkCollisionOnPlayer();
      void checkCollisionOnEnemies();
      void checkCollidingEnemyWithPlayer();

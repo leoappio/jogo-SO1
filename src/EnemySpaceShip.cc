@@ -1,7 +1,3 @@
-/**
- * @file EnemySpaceShip.cc
- **/
-
 #include "EnemySpaceShip.h"
 
 #include "Point.h"
