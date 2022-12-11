@@ -4,6 +4,8 @@
 #include "Timer.h"
 #include "Sprite.h"
 #include <iostream>
+#include "GameHandler.h"
+#include "thread.h"
 
 __BEGIN_API
 
@@ -40,9 +42,7 @@ void Boss::hit() {
    }
 }
 
-// update Boss movement
 void Boss::update(double dt) {
-   // update position
    centre = centre + speed * dt;
    
    if(centre.x < 700 && !targetable) {
@@ -51,14 +51,12 @@ void Boss::update(double dt) {
       speed.x = 0;      
       speed.y = 100;
    }
-
    if (centre.y > 450 && speed.y > 0) {
       speed.reflectY();
    }
    if (centre.y < 150 && speed.y < 0) {
       speed.reflectY();
    }
-   // check fire condition
    if (delayTimer->getCount() > fireSpeed) {
       fire = true;
       delayTimer->srsTimer();

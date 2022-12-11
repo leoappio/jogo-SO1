@@ -18,18 +18,12 @@
 
 __BEGIN_API
 
-extern const int GAME_OVER_WAIT_TIME;
-extern const int WEAPON_DELAY_LASER;
-extern const int WEAPON_DELAY_MISSILE;
-extern const Vector PLAYER_PROJECTILE_SPEED;
-
 class GameHandler{
   public:
    GameHandler();
    ~GameHandler();
 
-   void init();  
-   bool is_game_over();
+   void init();
 
    void setupSpaceShip();
    void setupBackground();
@@ -42,12 +36,9 @@ class GameHandler{
    void addMissile(const Point&, const ALLEGRO_COLOR&, const Vector&, bool isFromBoss);
    void addBomb(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addEnemySpaceShip(const Point&, const ALLEGRO_COLOR&, const Vector&);
-   void addBoss(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addPlayerLaserSingleShot();
    void addPlayerMissileSingleShot();
    
-   void spawnBoss();
-   void bossFire();
    void circleLaser(std::shared_ptr<Bomb> bomb);
 
   // allegro objects
@@ -92,7 +83,7 @@ class GameHandler{
    bool isToDraw;
    act::action lastAction;
 
-   bool bossExists = false;
+   bool bossExists;
    bool isToBossFire;
 
    int lives;

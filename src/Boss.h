@@ -22,6 +22,8 @@ class Boss{
   public:
    Boss (Point p, ALLEGRO_COLOR c, Vector s);
    ~Boss();
+  
+   std::shared_ptr<GameHandler> gameHandler;
    Point centre;
    ALLEGRO_COLOR color;
    Vector speed;
@@ -38,13 +40,9 @@ class Boss{
    bool isToUpdate;
    int col, row, spriteSheetIndex;
 
-   
    void update(double dt);
    void load_assets();
-   void deathAnim(std::shared_ptr<Sprite>);
    void hit();
-   void chooseFrame();
-   void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);
 };
 
 __END_API

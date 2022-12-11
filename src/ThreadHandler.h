@@ -12,6 +12,7 @@
 #include "Keyboard.h"
 #include "EnemySpawn.h"
 #include "CollisionAndLife.h"
+#include "BossHandler.h"
 
 __BEGIN_API
 
@@ -33,6 +34,7 @@ class ThreadHandler{
         spaceShipThread = new Thread(spaceShipExecutor);
         enemySpawnThread = new Thread(enemySpawnExecutor);
         collisionAndLifeThread = new Thread(collisionAndLifeExecutor);
+        bossThread = new Thread(bossHandlerExecutor);
         
         
         gameloopThread->join();
@@ -41,6 +43,7 @@ class ThreadHandler{
         spaceShipThread->join();
         enemySpawnThread->join();
         collisionAndLifeThread->join();
+        bossThread->join();
         
         delete gameloopThread;
         delete windowThread;
@@ -48,6 +51,7 @@ class ThreadHandler{
         delete spaceShipThread;
         delete enemySpawnThread;
         delete collisionAndLifeThread;
+        delete bossThread;
     }
 
 
@@ -81,6 +85,13 @@ class ThreadHandler{
         collisionAndLife->run();
     }
 
+    static void bossHandlerExecutor(){
+        bossHandler = new BossHandler();
+        bossHandler->gameHandler = gameHandler;
+        bossHandler->run();
+    }
+
+
     static void spaceShipExecutor(){
         gameHandler->spaceShip->gameHandler = gameHandler;
         gameHandler->spaceShip->run();
@@ -92,15 +103,17 @@ class ThreadHandler{
     static Thread* keyboardThread;
     static Thread* enemySpawnThread;
     static Thread* collisionAndLifeThread;
+    static Thread* bossThread;
 
     //static Thread* bombHandlerThread;
-    //static Thread* bossThread;
+    //static Thread *gameOverThread;
 
     static GameLoopHandler* gameLoop;
     static Window* window;
     static Keyboard* keyboard;
     static EnemySpawn* enemySpawn;
     static CollisionAndLife* collisionAndLife;
+    static BossHandler* bossHandler;
     static std::shared_ptr<GameHandler> gameHandler;
 };
 

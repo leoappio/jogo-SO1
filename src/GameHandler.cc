@@ -147,19 +147,6 @@ void GameHandler::circleLaser(std::shared_ptr<Bomb> bomb) {
    bomb->fire = false;
 
 }
-void GameHandler::bossFire(){
-   Point playerloc;
-
-   if (spaceShip) {
-      playerloc = spaceShip->centre;
-   }
-
-   Vector aim(0, 0);
-   aim.Angle(playerloc, boss->centre+Point(0,50), 0.9);
-   addMissile(boss->centre+Point(0,50), al_map_rgb(204, 3, 3), aim, true);
-   aim.Angle(playerloc, boss->centre+Point(0,-50), 0.9);
-   addMissile(boss->centre+Point(0,-50), al_map_rgb(204, 3, 3), aim, true);
-}
 
 void GameHandler::addLaser(const Point& cen, const ALLEGRO_COLOR& col, const Vector& spd) {
    lasersList.push_back(std::make_shared<Laser> (cen, col, spd));

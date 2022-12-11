@@ -45,7 +45,7 @@ void Window::updateBackground(double dt){
 }
 
 void Window::updateBoss() {
-   if (gameHandler->bossTimer->getCount() >= 60) {
+   if (gameHandler->bossTimer->getCount() >= 10) {
       gameHandler->bossExists = true;
       gameHandler->bossTimer->stopTimer();
       gameHandler->bossTimer->resetCount();
@@ -202,10 +202,9 @@ void Window::drawBombs() {
 
 void Window::drawBoss() {
    if (gameHandler->boss != nullptr) {
-    //TODO:DRAW BOSS
         chooseBossFrame();
         if (!gameHandler->boss->dead) {
-            gameHandler->bossShip -> draw_boss(gameHandler->boss->row, gameHandler->boss->col, 200, 200, gameHandler->boss->centre, 0);
+            gameHandler->bossShip->draw_boss(gameHandler->boss->row, gameHandler->boss->col, 200, 200, gameHandler->boss->centre, 0);
         }
         else {
             if (gameHandler->boss->dAnim < 5) {
