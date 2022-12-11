@@ -1,5 +1,5 @@
-#ifndef BOMBHANDLER_H
-#define BOMBHANDLER_H
+#ifndef GAMEOVERHANDLER_H
+#define GAMEOVERHANDLER_H
 
 #include "traits.h"
 #include <allegro5/allegro.h>
@@ -8,15 +8,14 @@
 
 __BEGIN_API
 
-class BombHandler{
+class GameOverHandler{
    
   public:
-   BombHandler(){};
-   ~BombHandler(){};
+   GameOverHandler(){};
+   ~GameOverHandler(){};
   
    std::shared_ptr<GameHandler> gameHandler;
    void run();
-   void circleLaser(std::shared_ptr<Bomb> bomb);
 };
 
 __END_API

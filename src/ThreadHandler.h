@@ -14,6 +14,7 @@
 #include "CollisionAndLife.h"
 #include "BossHandler.h"
 #include "BombHandler.h"
+#include "GameOverHandler.h"
 
 __BEGIN_API
 
@@ -37,6 +38,7 @@ class ThreadHandler{
         collisionAndLifeThread = new Thread(collisionAndLifeExecutor);
         bombHandlerThread = new Thread(bombHandlerExecutor);
         bossThread = new Thread(bossHandlerExecutor);
+        gameOverThread = new Thread(gameOverHandlerExecutor);
         
         
         gameloopThread->join();
@@ -47,6 +49,8 @@ class ThreadHandler{
         collisionAndLifeThread->join();
         bombHandlerThread->join();
         bossThread->join();
+        gameOverThread->join();
+
         
         delete gameloopThread;
         delete windowThread;
@@ -56,6 +60,7 @@ class ThreadHandler{
         delete collisionAndLifeThread;
         delete bombHandlerThread;
         delete bossThread;
+        delete gameOverThread;
     }
 
 
@@ -106,6 +111,12 @@ class ThreadHandler{
         bombHandler->run();
     }
 
+    static void gameOverHandlerExecutor(){
+        gameOverHandler = new GameOverHandler();
+        gameOverHandler->gameHandler = gameHandler;
+        gameOverHandler->run();
+    }
+
     static Thread* gameloopThread;
     static Thread* spaceShipThread;
     static Thread* windowThread;
@@ -114,8 +125,7 @@ class ThreadHandler{
     static Thread* collisionAndLifeThread;
     static Thread* bossThread;
     static Thread* bombHandlerThread;
-
-    //static Thread *gameOverThread;
+    static Thread *gameOverThread;
 
     static GameLoopHandler* gameLoop;
     static Window* window;
@@ -124,6 +134,7 @@ class ThreadHandler{
     static CollisionAndLife* collisionAndLife;
     static BossHandler* bossHandler;
     static BombHandler* bombHandler;
+    static GameOverHandler* gameOverHandler;
     static std::shared_ptr<GameHandler> gameHandler;
 };
 

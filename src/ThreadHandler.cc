@@ -10,6 +10,7 @@ Thread* ThreadHandler::enemySpawnThread;
 Thread* ThreadHandler::collisionAndLifeThread;
 Thread* ThreadHandler::bossThread;
 Thread* ThreadHandler::bombHandlerThread;
+Thread* ThreadHandler::gameOverThread;
 
 GameLoopHandler* ThreadHandler::gameLoop;
 std::shared_ptr<GameHandler> ThreadHandler::gameHandler;
@@ -19,5 +20,6 @@ EnemySpawn* ThreadHandler::enemySpawn;
 CollisionAndLife* ThreadHandler::collisionAndLife;
 BossHandler* ThreadHandler::bossHandler;
 BombHandler* ThreadHandler::bombHandler;
+GameOverHandler* ThreadHandler::gameOverHandler;
 
 __END_API
