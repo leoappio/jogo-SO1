@@ -9,6 +9,7 @@ Thread* ThreadHandler::keyboardThread;
 Thread* ThreadHandler::enemySpawnThread;
 Thread* ThreadHandler::collisionAndLifeThread;
 Thread* ThreadHandler::bossThread;
+Thread* ThreadHandler::bombHandlerThread;
 
 GameLoopHandler* ThreadHandler::gameLoop;
 std::shared_ptr<GameHandler> ThreadHandler::gameHandler;
@@ -17,5 +18,6 @@ Keyboard* ThreadHandler::keyboard;
 EnemySpawn* ThreadHandler::enemySpawn;
 CollisionAndLife* ThreadHandler::collisionAndLife;
 BossHandler* ThreadHandler::bossHandler;
+BombHandler* ThreadHandler::bombHandler;
 
 __END_API

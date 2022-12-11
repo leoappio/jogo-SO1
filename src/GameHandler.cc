@@ -134,17 +134,6 @@ void GameHandler::setupSprites(){
    bossShip   = std::make_shared<Sprite> ("bossv2.png");
 }
 
-void GameHandler::circleLaser(std::shared_ptr<Bomb> bomb) {
-   
-   for(int i = -500; i <= 500; i += 325) {
-      for(int j = -500; j <= 500; j += 325) {
-	      addLaser(bomb->centre, bomb->color, Vector(i, j));
-      }
-   }
-   bomb->fire = false;
-
-}
-
 void GameHandler::addLaser(const Point& cen, const ALLEGRO_COLOR& col, const Vector& spd) {
    lasersList.push_back(std::make_shared<Laser> (cen, col, spd));
 }

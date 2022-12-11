@@ -8,6 +8,7 @@ Bomb::Bomb(Point p, ALLEGRO_COLOR c, Vector s) : centre(p), color(c), speed(s), 
    dAnim = 0;
    dAnim_complete = false;
    fire = false;
+   circleLaserShot = false;
    
    load_assets();
 }

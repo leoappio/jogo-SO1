@@ -45,7 +45,7 @@ void Window::updateBackground(double dt){
 }
 
 void Window::updateBoss() {
-   if (gameHandler->bossTimer->getCount() >= 10) {
+   if (gameHandler->bossTimer->getCount() >= 60) {
       gameHandler->bossExists = true;
       gameHandler->bossTimer->stopTimer();
       gameHandler->bossTimer->resetCount();
@@ -110,7 +110,7 @@ void Window::updateBombPosition(double dt) {
       for (auto enemy = gameHandler->bombEnemiesList.begin(); enemy != gameHandler->bombEnemiesList.end(); ++enemy) {
          (*enemy)->isToUpdate = true;
          if((*enemy)->fire){
-            gameHandler->circleLaser((*enemy));
+            (*enemy)->circleLaserShot = true;
             (*enemy)->fire = false;
          }
       }

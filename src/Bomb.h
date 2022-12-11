@@ -36,12 +36,11 @@ class Bomb{
    bool dAnim_complete;
    bool fire, fired;
    bool isToUpdate;
+   bool circleLaserShot;
   
    void update(double dt);
    void load_assets();
-   void deathAnim(std::shared_ptr<Sprite> d);
    void hit();
-   void draw(std::shared_ptr<Sprite> ship, std::shared_ptr<Sprite> death);
 };
 
 __END_API

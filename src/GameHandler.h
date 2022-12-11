@@ -38,7 +38,6 @@ class GameHandler{
    void addEnemySpaceShip(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addPlayerLaserSingleShot();
    void addPlayerMissileSingleShot();   
-   void circleLaser(std::shared_ptr<Bomb> bomb);
 
    ALLEGRO_TIMER *_timer;
    ALLEGRO_EVENT_QUEUE *_eventQueue;
