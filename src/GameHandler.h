@@ -78,7 +78,7 @@ class GameHandler{
    bool spawnEnemies;
    bool isToUpdate;
    bool isToDraw;
-   act::action lastAction;
+   std::list<act::action> actionsList;
    bool bossExists;
    bool isToBossFire;
 

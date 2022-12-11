@@ -51,33 +51,39 @@ void SpaceShip::hit() {
 }
 
 void SpaceShip::processInputAction(){
-  if (gameHandler->lastAction == act::action::MOVE_UP) {
-     speed.y -= 250;
-  }
-  if (gameHandler->lastAction == act::action::MOVE_RIGHT) {
-     speed.x += 250;
-  }
-  if (gameHandler->lastAction == act::action::MOVE_DOWN) {
-     speed.y += 250;
-  }
-  if (gameHandler->lastAction == act::action::MOVE_LEFT) {
-     speed.x -= 250;
-  }
-  if (gameHandler->lastAction == act::action::FIRE_PRIMARY) {
-   if(gameHandler->laserShotsTimer->getCount() >= 6){
-      gameHandler->addPlayerLaserSingleShot();
-   }
-  }
-  if (gameHandler->lastAction == act::action::FIRE_SECONDARY) {
-   if(gameHandler->missileShotsTimer->getCount() >= 20){
-      gameHandler->addPlayerMissileSingleShot();
-   }
-  }
-  if (gameHandler->lastAction == act::action::QUIT_GAME) {
-     gameHandler->gameOver = true;
-  }
 
-  gameHandler->lastAction = act::action::NO_ACTION;
+   while(gameHandler->actionsList.size() > 0){
+      if (gameHandler->actionsList.front() == act::action::MOVE_UP) {
+         speed.y -= 250;
+      }
+      if (gameHandler->actionsList.front() == act::action::MOVE_RIGHT) {
+         speed.x += 250;
+      }
+      if (gameHandler->actionsList.front() == act::action::MOVE_DOWN) {
+         speed.y += 250;
+      }
+      if (gameHandler->actionsList.front() == act::action::MOVE_LEFT) {
+         speed.x -= 250;
+      }
+      if (gameHandler->actionsList.front() == act::action::FIRE_PRIMARY) {
+         if(gameHandler->laserShotsTimer->getCount() >= 6){
+            gameHandler->addPlayerLaserSingleShot();
+         }
+      }
+      if (gameHandler->actionsList.front() == act::action::FIRE_SECONDARY) {
+         if(gameHandler->missileShotsTimer->getCount() >= 20){
+            gameHandler->addPlayerMissileSingleShot();
+         }
+      }
+      if (gameHandler->actionsList.front() == act::action::QUIT_GAME) {
+         gameHandler->gameOver = true;
+      }
+
+      gameHandler->actionsList.pop_front();
+   }
+
+
+  gameHandler->actionsList.push_back(act::action::NO_ACTION);
 }
 
 void SpaceShip::update() {

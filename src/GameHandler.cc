@@ -26,7 +26,7 @@ GameHandler::GameHandler():
    isToBossFire(false),
    lives(3),
    dtToUpdate(0.0),
-   lastAction(act::action::NO_ACTION)
+   actionsList(act::action::NO_ACTION)
 {
    
 }
