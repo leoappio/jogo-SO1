@@ -37,15 +37,12 @@ class GameHandler{
    void addBomb(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addEnemySpaceShip(const Point&, const ALLEGRO_COLOR&, const Vector&);
    void addPlayerLaserSingleShot();
-   void addPlayerMissileSingleShot();
-   
+   void addPlayerMissileSingleShot();   
    void circleLaser(std::shared_ptr<Bomb> bomb);
 
-  // allegro objects
    ALLEGRO_TIMER *_timer;
    ALLEGRO_EVENT_QUEUE *_eventQueue;
    ALLEGRO_DISPLAY *_display;
-
 
    std::shared_ptr<Timer> gameOverTimer;
    std::shared_ptr<Timer> laserShotsTimer;
@@ -59,6 +56,7 @@ class GameHandler{
    std::list<std::shared_ptr<EnemySpaceShip>> enemySpaceShipsList;
    std::list<std::shared_ptr<Bomb>> bombEnemiesList;
    std::shared_ptr<SpaceShip> spaceShip;
+
    std::shared_ptr<Sprite> spaceShipSprite;
    std::shared_ptr<Sprite> enemyShip;
    std::shared_ptr<Sprite> enemyDeath;
@@ -82,14 +80,10 @@ class GameHandler{
    bool isToUpdate;
    bool isToDraw;
    act::action lastAction;
-
    bool bossExists;
    bool isToBossFire;
 
    int lives;
-   int displayWidth;
-   int displayHeight;
-   int framesPerSec;
    double dtToUpdate;
 };
 __END_API

@@ -25,9 +25,6 @@ GameHandler::GameHandler():
    bossExists(false),
    isToBossFire(false),
    lives(3),
-   displayWidth(800),
-   displayHeight(600),
-   framesPerSec(60),
    dtToUpdate(0.0),
    lastAction(act::action::NO_ACTION)
 {
@@ -95,9 +92,9 @@ void GameHandler::init() {
 
 
 void GameHandler::setupTimers(){
-   gameOverTimer = std::make_shared<Timer> (framesPerSec); gameOverTimer->create();
-   laserShotsTimer = std::make_shared<Timer> (framesPerSec); laserShotsTimer->create();   
-   missileShotsTimer = std::make_shared<Timer> (framesPerSec); missileShotsTimer->create();
+   gameOverTimer = std::make_shared<Timer> (60); gameOverTimer->create();
+   laserShotsTimer = std::make_shared<Timer> (60); laserShotsTimer->create();   
+   missileShotsTimer = std::make_shared<Timer> (60); missileShotsTimer->create();
    bossTimer = std::make_shared<Timer> (1); bossTimer->create();
    spawnEnemyShipsTimer = std::make_shared<Timer> (1); spawnEnemyShipsTimer->create();
    spawnBombsTimer = std::make_shared<Timer> (1); spawnBombsTimer->create();
