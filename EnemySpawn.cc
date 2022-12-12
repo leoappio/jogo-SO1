@@ -16,6 +16,17 @@ void EnemySpawn::run(){
             gameHandler->addEnemySpaceShip(Point(1000, 200), al_map_rgb(246, 64, 234), Vector(-180, 0));
             gameHandler->addEnemySpaceShip(Point(1100, 100), al_map_rgb(246, 64, 234), Vector(-180, 0));
             gameHandler->addEnemySpaceShip(Point(1100, 500), al_map_rgb(246, 64, 234), Vector(-180, 0));
+
+            Point centerPoint(800, 200);
+            Vector speedVector(0, 0);
+
+            for (int i = 0; i < 3; i++) {
+                speedVector.rollRandom();
+                centerPoint.rollRandom();
+                gameHandler->addEnemySpaceShip(centerPoint, al_map_rgb(255, 51, 51), speedVector);
+	        }
+
+
         }
         Thread::yield();
     }
