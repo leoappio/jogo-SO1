@@ -61,6 +61,7 @@ class ThreadHandler{
         delete bombHandlerThread;
         delete bossThread;
         delete gameOverThread;
+        gameHandler.reset();
     }
 
 
@@ -68,36 +69,42 @@ class ThreadHandler{
         gameLoop = new GameLoopHandler();
         gameLoop->gameHandler = gameHandler;
         gameLoop->gameLoop();
+        delete gameLoop;
     }
 
     static void windowExecutor(){
         window = new Window();
         window->gameHandler = gameHandler;
         window->run();
+        delete window;
     }
 
     static void keyboardExecutor(){
         keyboard = new Keyboard();
         keyboard->gameHandler = gameHandler;
         keyboard->run();
+        delete keyboard;
     }
 
     static void enemySpawnExecutor(){
         enemySpawn = new EnemySpawn();
         enemySpawn->gameHandler = gameHandler;
         enemySpawn->run();
+        delete enemySpawn;
     }
 
     static void collisionAndLifeExecutor(){
         collisionAndLife = new CollisionAndLife();
         collisionAndLife->gameHandler = gameHandler;
         collisionAndLife->run();
+        delete collisionAndLife;
     }
 
     static void bossHandlerExecutor(){
         bossHandler = new BossHandler();
         bossHandler->gameHandler = gameHandler;
         bossHandler->run();
+        delete bossHandler;
     }
 
     static void spaceShipExecutor(){
@@ -109,12 +116,14 @@ class ThreadHandler{
         bombHandler = new BombHandler();
         bombHandler->gameHandler = gameHandler;
         bombHandler->run();
+        delete bombHandler;
     }
 
     static void gameOverHandlerExecutor(){
         gameOverHandler = new GameOverHandler();
         gameOverHandler->gameHandler = gameHandler;
         gameOverHandler->run();
+        delete gameOverHandler;
     }
 
     static Thread* gameloopThread;
